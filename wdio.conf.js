@@ -21,7 +21,8 @@ export const config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        './test/specs/**/EmployeeList.js'
+        './test/specs/**/EmployeeList.js',
+        './test/specs/**/PIM.js'
     ],
     // Patterns to exclude.
     exclude: [
@@ -88,8 +89,9 @@ export const config = {
     // gets prepended directly.
     baseUrl: 'https://opensource-demo.orangehrmlive.com/web/index.php/',
     //
-    // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    // Default timeout for all waitFor* commands. Đặt cao hơn mức thông thường vì đây là demo
+    // public dùng chung (opensource-demo.orangehrmlive.com), độ trễ phản hồi dao động mạnh.
+    waitforTimeout: 30000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
@@ -131,7 +133,9 @@ export const config = {
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: 'bdd',
-        timeout: 60000
+        // PIM_TC17 tạo tuần tự 3 nhân viên trong 1 test (theo đúng luồng thủ công của test
+        // case xóa hàng loạt) — trên demo public chậm, tổng thời gian có thể vượt 60s.
+        timeout: 120000
     },
 
     //
