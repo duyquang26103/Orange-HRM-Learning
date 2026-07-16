@@ -4,7 +4,11 @@ import EmployeeListPage from '../pageobjects/EmployeeListPage.js';
 describe('Employee List', () => {
   before(async () => {
     await LoginPage.open();
-    await LoginPage.login('Admin', 'admin123');
+    const adminUser = {
+      username: 'Admin',
+      password: 'admin123'
+    };
+    await LoginPage.login(adminUser.username, adminUser.password);
   })
 
   it('TC01: Search employee by name', async () => {
