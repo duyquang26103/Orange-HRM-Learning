@@ -9,6 +9,7 @@ const INVALID_CREDENTIALS = 'Invalid credentials';
 describe('Login Module', () => {
     beforeEach(async () => {
         await browser.url('auth/logout');
+        await browser.refresh();
         await LoginPage.inputUsername.waitForDisplayed({ timeout: 10000 });
     });
 
