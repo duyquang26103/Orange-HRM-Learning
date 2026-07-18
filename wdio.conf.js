@@ -97,7 +97,7 @@ export const config = {
     //
     // Default timeout for all waitFor* commands. Đặt cao hơn mức thông thường vì đây là demo
     // public dùng chung (opensource-demo.orangehrmlive.com), độ trễ phản hồi dao động mạnh.
-    waitforTimeout: 30000,
+    waitforTimeout: 10000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response

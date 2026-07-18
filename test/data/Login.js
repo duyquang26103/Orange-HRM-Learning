@@ -10,7 +10,8 @@ export const invalidLoginCases = [
         tcId: 'LOGIN_TC02',
         description: 'đăng nhập thất bại với password sai',
         username: 'Admin',
-        password: 'wrongpass'
+        password: 'wrongpass',
+        waitTimeout: 10000
     },
     {
         tcId: 'LOGIN_TC03',
