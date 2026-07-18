@@ -1,4 +1,6 @@
-class ContactDetailsPage {
+import Page from './BasePage.js';
+
+class ContactDetailsPage extends Page {
     get street1Input() {
         return $("//label[text()='Street 1']/../following-sibling::div/input");
     }

@@ -1,4 +1,7 @@
-class PersonalDetailsPage {
+import Page from './BasePage.js';
+import ContactDetailsPage from './ContactDetailsPage.js';
+
+class PersonalDetailsPage extends Page {
     get employeeFullName() {
         return $('.orangehrm-edit-employee-name');
     }
@@ -63,7 +66,7 @@ class PersonalDetailsPage {
             timeoutMsg: 'Không điều hướng sang Contact Details sau khi click tab'
         });
 
-        await browser.pause(3000);
+        await ContactDetailsPage.street1Input.waitForDisplayed({ timeout: 15000 });
     }
 }
 
