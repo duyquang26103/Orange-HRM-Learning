@@ -1,9 +1,46 @@
-export const login ={
-    "valid" : { "username"  : 'Admin', 
-     "password" : 'admin123'
-    }, 
+export const validUser = {
+    username: 'Admin',
+    password: 'admin123'
+};
 
-    invalid: { "username"  : 'dien@yopmail.com', 
-     "password" : 'admin123'
+// Các case đăng nhập thất bại có cùng hành động (login) và cùng assertion
+// (errorAlert hiển thị + text "Invalid credentials") — dùng chung 1 vòng lặp DDT.
+export const invalidLoginCases = [
+    {
+        tcId: 'LOGIN_TC02',
+        description: 'đăng nhập thất bại với password sai',
+        username: 'Admin',
+        password: 'wrongpass'
+    },
+    {
+        tcId: 'LOGIN_TC03',
+        description: 'đăng nhập thất bại với username sai',
+        username: 'NotExist',
+        password: 'admin123'
+    },
+    {
+        tcId: 'LOGIN_TC09',
+        description: 'password phân biệt hoa thường',
+        username: 'Admin',
+        password: 'Admin123'
+    },
+    {
+        tcId: 'LOGIN_TC10',
+        description: 'SQL Injection cơ bản trong username',
+        username: "' OR '1'='1",
+        password: 'abc'
+    },
+    {
+        tcId: 'LOGIN_TC19',
+        description: 'username quá dài (>255 ký tự)',
+        username: 'a'.repeat(300),
+        password: 'admin123',
+        waitTimeout: 15000
+    },
+    {
+        tcId: 'LOGIN_TC20',
+        description: 'ký tự đặc biệt Unicode trong username',
+        username: 'Adminñ日本',
+        password: 'admin123'
     }
-}
+];
