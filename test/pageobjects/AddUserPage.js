@@ -3,41 +3,69 @@ import { $ } from '@wdio/globals';
 import Page from './BasePage.js';
 
 class AddUserPage extends Page {
-    // --- Elements ---
-    get dropdownUserRole() { return $('//label[text()="User Role"]/../following-sibling::div//div[@class="oxd-select-text-input"]'); }
-    get inputEmployeeName() { return $('//label[text()="Employee Name"]/../following-sibling::div//input'); }
-    get dropdownStatus() { return $('//label[text()="Status"]/../following-sibling::div//div[@class="oxd-select-text-input"]'); }
+    get userRoleDdl() { return $('//label[text()="User Role"]/../following-sibling::div//div[@class="oxd-select-text-input"]'); }
+    get employeeNameTbx() { return $('//label[text()="Employee Name"]/../following-sibling::div//input'); }
+    get statusDdl() { return $('//label[text()="Status"]/../following-sibling::div//div[@class="oxd-select-text-input"]'); }
     get inputUsername() { return $('//label[text()="Username"]/../following-sibling::div//input'); }
     get inputPassword() { return $('//label[text()="Password"]/../following-sibling::div//input'); }
     get inputConfirmPassword() { return $('//label[text()="Confirm Password"]/../following-sibling::div//input'); }
-    get btnSave() { return $('button[type="submit"]'); }
+    get saveBtn() { return $('button[type="submit"]'); }
+    get requiredUsernameMsg() {
+        // Đi ngược lên thẻ cha bao bọc toàn bộ cụm Input, sau đó tìm thẻ span lỗi bên dưới nó
+        return $('//label[text()="Username"]/ancestor::div[contains(@class, "oxd-input-group")]//span[contains(@class, "oxd-input-field-error-message")]');
+    }
 
-    // Helper định vị item trong dropdown tùy biến của OrangeHRM
-    dropdownOption(optionText) { return $(`//div[@role="listbox"]//span[text()="${optionText}"]`); }
 
-    // --- Actions ---
+    userRoleOption(roleName) {
+        return $(`//div[@role="listbox"]//*[contains(text(), "${roleName}")]`);
+    }
+
+
+    employeeSuggestionItem(empName) {
+        return $(`//div[@role="listbox"]//*[contains(text(), "${empName}")]`);
+    }
+
+    statusOption(statusName) {
+        return $(`//div[@role="listbox"]//*[contains(text(), "${statusName}")]`);
+    }
+
     async createUser(role, empName, status, username, password) {
-        // Chọn User Role
-        await this.dropdownUserRole.click();
-        await this.dropdownOption(role).click();
 
-        // Gõ tên Employee và chọn từ gợi ý auto-complete
-        await this.inputEmployeeName.setValue(empName);
-        await browser.pause(2000); // Chờ gợi ý hiển thị
-        await this.dropdownOption(empName).click();
+        await this.userRoleDdl.click();
+        await this.userRoleOption(role).waitForDisplayed({ timeout: 3000 });
+        await this.userRoleOption(role).click();
 
-        // Chọn Status
-        await this.dropdownStatus.click();
-        await this.dropdownOption(status).click();
 
-        // Điền text fields
+        await this.employeeNameTbx.setValue(empName);
+        await this.employeeSuggestionItem(empName).waitForDisplayed({
+            timeout: 5000,
+            timeoutMsg: `Không tìm thấy gợi ý nào chứa tên nhân viên: ${empName}`
+        });
+        await this.employeeSuggestionItem(empName).click();
+
+
+        await this.statusDdl.click();
+        await this.statusOption(status).waitForDisplayed({ timeout: 3000 });
+        await this.statusOption(status).click();
+
+
         await this.inputUsername.setValue(username);
         await this.inputPassword.setValue(password);
         await this.inputConfirmPassword.setValue(password);
 
-        // Lưu thông tin
-        await this.btnSave.click();
-        await browser.pause(2000); // Chờ hệ thống lưu thành công và redirect về trang Admin
+
+        await this.saveBtn.click();
+
+        // await browser.waitUntil(
+        //     async () => {
+        //         const currentUrl = await browser.getUrl();
+        //         return currentUrl.includes('admin/viewSystemUsers');
+        //     },
+        //     {
+        //         timeout: 7000,
+        //         timeoutMsg: 'Lưu thất bại hoặc hệ thống không tự động chuyển hướng về Admin List'
+        //     }
+        // );
     }
 }
 

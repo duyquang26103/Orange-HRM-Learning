@@ -3,13 +3,12 @@ import { expect } from '@wdio/globals';
 import LoginPage from '../pageobjects/LoginPage.js';
 import AdminPage from '../pageobjects/AdminPage.js';
 import AddUserPage from '../pageobjects/AddUserPage.js';
-// 1. Import SideMenuComponent vào file test
 import SideMenuComponent from '../pageobjects/components/SideMenuComponent.js';
 
 describe('Admin Management — Split Test Cases', () => {
 
     let testUsername;
-    const employeeName = 'Albert  Einstein';
+    const employeeName = 'Jobin Mathew Sam';
 
     before(async () => {
         await browser.maximizeWindow();
@@ -22,46 +21,110 @@ describe('Admin Management — Split Test Cases', () => {
         await SideMenuComponent.goTo('Admin');
     });
 
-    it.only('TC_01: Tạo thành công User mới với quyền ESS', async () => {
+    it.only('TC_01: Tạo thành công User mới với quyền Admin', async () => {
+        // 1. Khởi tạo một Username ngẫu nhiên riêng cho tài khoản Admin mới này
+        const randomId = Math.floor(Math.random() * 10000);
+        const adminUsername = `NewAdmin_${randomId}`;
+
+        await AdminPage.clickAddUser();
+
+
+        await AddUserPage.createUser('Admin', employeeName, 'Enabled', adminUsername, 'Password123!'
+        );
+
+
+        await expect(browser).toHaveUrl(expect.stringContaining('admin/viewSystemUsers'));
+
+
+        await AdminPage.searchAndFilterUser(adminUsername, 'Admin');
+
+
+        await expect(AdminPage.tblRows).toBeElementsArrayOfSize(1);
+        await expect(AdminPage.firstRowCellUsername).toHaveText(adminUsername);
+
+        // 7. Làm sạch dữ liệu (Xóa tài khoản admin vừa tạo này đi để tránh rác hệ thống)
+        await AdminPage.deleteUserInList();
+    });
+
+    it.only('TC_02: Tạo thành công User mới với quyền ESS', async () => {
         await AdminPage.clickAddUser();
         await AddUserPage.createUser('ESS', employeeName, 'Enabled', testUsername, 'Password123!');
 
-        //điều hướng quay lại trang Admin
+        await browser.waitUntil(
+            async () => {
+                const currentUrl = await browser.getUrl();
+                return currentUrl.includes('admin/viewSystemUsers');
+            },
+            {
+                timeout: 7000,
+                timeoutMsg: 'Lưu thất bại hoặc hệ thống không tự động chuyển hướng về Admin List'
+            }
+        );
+
         await expect(browser).toHaveUrl(expect.stringContaining('admin/viewSystemUsers'));
     });
 
-    it.only('TC_02: Tìm kiếm User theo chính xác Username', async () => {
+    it('TC_03: Tìm kiếm User theo chính xác Username', async () => {
 
-        await AdminPage.inputUsername.waitForEnabled({ timeout: 5000 });
-        await AdminPage.inputUsername.setValue(testUsername);
-        await AdminPage.btnSearch.click();
-        //  await browser.pause(3000);
-        await AdminPage.tableRows[0].waitForDisplayed({ timeout: 5000 });
+        await AdminPage.userNameTbx.waitForEnabled({ timeout: 5000 });
+        await AdminPage.userNameTbx.setValue(testUsername);
+        await AdminPage.searchBtn.click();
+        await AdminPage.tblRows[0].waitForDisplayed({ timeout: 5000 });
 
         // Kiểm tra xem dòng đầu tiên có đúng tên user vừa tạo không
         await expect(AdminPage.firstRowCellUsername).toHaveText(testUsername);
     });
 
-    it.only('TC_03: Lọc danh sách (Filter) theo User Role', async () => {
+    it('TC_04: Lọc danh sách (Filter) theo User Role', async () => {
         await SideMenuComponent.goTo('Admin');
 
-        await AdminPage.inputUsername.setValue('');
+        await AdminPage.userNameTbx.setValue('');
 
         // Chọn filter theo role ESS
-        await AdminPage.dropdownUserRole.click();
+        await AdminPage.userRoleDdl.click();
         await AdminPage.dropdownOption('ESS').click();
-        await AdminPage.btnSearch.click();
-        await AdminPage.tableRows[0].waitForDisplayed({ timeout: 5000 });
+        await AdminPage.searchBtn.click();
+        await AdminPage.tblRows[0].waitForDisplayed({ timeout: 5000 });
 
         // Verify danh sách trả về hiển thị (ít nhất là lớn hơn hoặc bằng 1)
-        const rowCount = await AdminPage.tableRows.length;
+        const rowCount = await AdminPage.tblRows.length;
         await expect(rowCount).toBeGreaterThanOrEqual(1);
     });
 
-    it('TC_04: Xác thực (Verify) User vừa tạo hiển thị duy nhất 1 kết quả', async () => {
+    it('TC_05: Xác thực (Verify) User vừa tạo hiển thị duy nhất 1 kết quả', async () => {
+        // Kết hợp cả search tên và lọc đúng role để verify độ chính xác
+        await AdminPage.searchAndFilterUser(testUsername, 'ESS');
+
+        await expect(AdminPage.tblRows).toBeElementsArrayOfSize(1);
+        await expect(AdminPage.firstRowCellUsername).toHaveText(testUsername);
     });
 
-    it('TC_05: Xóa (Delete) User vừa tạo và verify sạch dữ liệu', async () => {
+    it('TC_06: Xóa (Delete) User vừa tạo và verify sạch dữ liệu', async () => {
+        await AdminPage.deleteUserInList();
 
+        // Tìm kiếm lại để chắc chắn user không còn tồn tại
+        await AdminPage.searchAndFilterUser(testUsername, 'ESS');
+        await expect(AdminPage.tblRows).toBeElementsArrayOfSize(0);
     });
+
+    it.only('TC_08: Tạo user thất bại — Bỏ trống ô Username', async () => {
+        await AdminPage.clickAddUser();
+        await AddUserPage.createUser('ESS', employeeName, 'Enabled', '', 'Password123!');
+
+        await AddUserPage.requiredUsernameMsg.waitForDisplayed({
+            timeout: 5000,
+            timeoutMsg: 'Màn hình không hiển thị lỗi Required dưới ô Username sau 5 giây!'
+        });
+
+
+
+        await expect(AddUserPage.requiredUsernameMsg).toBeDisplayed();
+
+
+        await expect(AddUserPage.requiredUsernameMsg).toHaveText('Required');
+
+
+        await expect(browser).toHaveUrl(expect.stringContaining('admin/saveSystemUser'));
+    });
+
 });
