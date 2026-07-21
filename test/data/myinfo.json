@@ -1,0 +1,38 @@
+{
+    "validPersonalDetails": {
+        "firstName": "Daisy",
+        "middleName": "",
+        "lastName": "Nguyen",
+        "employeeId": "0369",
+        "otherId": "",
+        "driversLicense": "",
+        "licenseExpiry": "",
+        "nationality": "Sri Lankan",
+        "maritalStatus": "Married",
+        "dateOfBirth": "1986-07-21",
+        "gender": "Male"
+    },
+    "updateName": {
+        "firstName": "Zoe",
+        "lastName": "Tran"
+    },
+    "invalidPersonalDetails": {
+        "emptyFirstName": {
+            "firstName": "",
+            "lastName": "Nguyen",
+            "expectedError": "Required"
+        },
+        "futureDOB": {
+            "firstName": "Daisy",
+            "lastName": "Nguyen",
+            "dateOfBirth": "2099-01-01",
+            "expectedError": "Should be a valid date"
+        }
+    },
+    "nationalityList": [
+        "Vietnamese",
+        "American",
+        "Japanese",
+        "Sri Lankan"
+    ]
+}
