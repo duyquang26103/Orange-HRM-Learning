@@ -12,9 +12,12 @@
         "dateOfBirth": "1986-07-21",
         "gender": "Male"
     },
-    "updateName": {
-        "firstName": "Zoe",
-        "lastName": "Tran"
+    "updateInfo": {
+        "firstName": "Jonh",
+        "lastName": "Smith",
+        "employeeId": "EMP123",
+        "nationality": "Vietnamese",
+        "maritialStatus": "Single"
     },
     "invalidPersonalDetails": {
         "emptyFirstName": {
@@ -27,6 +30,12 @@
             "lastName": "Nguyen",
             "dateOfBirth": "2099-01-01",
             "expectedError": "Should be a valid date"
+        },
+        "dobWrongFormat": {
+            "firstName": "Daisy",
+            "lastName": "Nguyen",
+            "dateOfBirth": "32/13/2020",
+            "expectedError": "Should be a valid date in yyyy-dd-mm format"
         }
     },
     "nationalityList": [
