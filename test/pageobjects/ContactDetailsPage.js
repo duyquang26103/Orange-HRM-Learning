@@ -21,16 +21,10 @@ class ContactDetailsPage extends Page {
         return $('.oxd-toast');
     }
 
-    /**
-     * @param {string} street
-     */
     async setAddress(street) {
         await this.street1Input.setValue(street);
     }
 
-    /**
-     * @param {string} phone
-     */
     async setMobile(phone) {
         await this.mobileInput.setValue(phone);
         await this.mobileInput.click();

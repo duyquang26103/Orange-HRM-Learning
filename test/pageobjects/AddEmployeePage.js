@@ -68,18 +68,11 @@ class AddEmployeePage extends Page {
     async setEmployeeId(id) {
         const field = this.inputEmployeeId;
 
-        // Employee Id mặc định được Angular điền bất đồng bộ ngay sau khi trang load. Nếu
-        // set giá trị của mình trước khi effect đó chạy xong, nó sẽ ghi đè lại giá trị mình
-        // vừa set — phải đợi field có giá trị mặc định trước rồi mới override.
         await browser.waitUntil(async () => (await field.getValue()).length > 0, {
             timeout: 10000,
             timeoutMsg: 'Employee Id mặc định không được điền tự động sau khi chờ'
         });
 
-        // field.setValue()/clearValue() không thật sự xóa giá trị cũ trên input này (component
-        // Angular custom giữ state riêng, không đồng bộ lại khi DOM bị clear ở tầng WebDriver) —
-        // đã xác nhận qua log thực tế: 3 lần setValue() nối chuỗi ID liên tiếp thay vì ghi đè.
-        // Phải clear bằng phím thật (End + Backspace) để Angular nhận đúng sự kiện xóa.
         await field.click();
         await browser.keys('End');
         await browser.keys(Array(20).fill('Backspace'));
@@ -98,9 +91,7 @@ class AddEmployeePage extends Page {
         await this.toggleCreateLoginDetails.click();
     }
 
-    /**
-     * @param {{username: string, password: string, confirmPassword?: string}} login
-     */
+
     async fillLoginDetails({ username, password, confirmPassword }) {
         await this.inputUsername.setValue(username);
         await this.inputPassword.setValue(password);
@@ -113,9 +104,7 @@ class AddEmployeePage extends Page {
         await this.btnSave.click();
     }
 
-    /**
-     * @param {string} filePath
-     */
+
     async uploadAvatar(filePath) {
 
         await browser.execute(() => {

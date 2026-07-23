@@ -30,10 +30,6 @@ class PersonalDetailsPage extends Page {
         return $('a*=Contact Details');
     }
 
-    /**
-     * @param {WebdriverIO.Element} dropdown
-     * @param {string} optionText
-     */
     async selectDropdownOption(dropdown, optionText) {
         await dropdown.click();
         const option = $(`//div[contains(@class,'oxd-select-dropdown')]//span[text()='${optionText}']`);
@@ -41,16 +37,10 @@ class PersonalDetailsPage extends Page {
         await option.click();
     }
 
-    /**
-     * @param {string} value
-     */
     async setNationality(value) {
         await this.selectDropdownOption(await this.nationalityDropdown, value);
     }
 
-    /**
-     * @param {string} value
-     */
     async setMaritalStatus(value) {
         await this.selectDropdownOption(await this.maritalStatusDropdown, value);
     }
