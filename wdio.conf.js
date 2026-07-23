@@ -1,4 +1,9 @@
 // import path from 'path';
+import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 
 export const config = {
     //
@@ -98,7 +103,7 @@ export const config = {
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    baseUrl: 'https://opensource-demo.orangehrmlive.com/web/index.php/',
+    baseUrl: process.env.BASE_URL || 'https://example.com',
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,

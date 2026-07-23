@@ -13,7 +13,7 @@ describe('Login Module', () => {
     });
 
     // LOGIN_TC01 | Severity: S | Priority: Critical | Happy path
-    it('LOGIN_TC01: đăng nhập thành công với tài khoản hợp lệ', async () => {
+    it.only('LOGIN_TC01: đăng nhập thành công với tài khoản hợp lệ', async () => {
         await LoginPage.login(VALID_USER, VALID_PASS);
         // Expected: chuyển đến Dashboard, hiển thị breadcrumb "Dashboard"
         await expect(DashboardPage.dashboardTag).toBeDisplayed();
