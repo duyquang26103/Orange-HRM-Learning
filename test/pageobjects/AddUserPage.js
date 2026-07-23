@@ -14,19 +14,23 @@ class AddUserPage extends Page {
         // Đi ngược lên thẻ cha bao bọc toàn bộ cụm Input, sau đó tìm thẻ span lỗi bên dưới nó
         return $('//label[text()="Username"]/ancestor::div[contains(@class, "oxd-input-group")]//span[contains(@class, "oxd-input-field-error-message")]');
     }
+    get duplicateUsernameMsg() {
+        // Đi từ label Username -> lên khung bao bọc -> xuống thẻ span hiển thị lỗi
+        return $('//label[text()="Username"]/ancestor::div[contains(@class, "oxd-input-group")]//span[contains(@class, "oxd-input-field-error-message")]');
+    }
 
 
     userRoleOption(roleName) {
-        return $(`//div[@role="listbox"]//*[contains(text(), "${roleName}")]`);
+        return $(`//div[@role="listbox"]//span[text()="${roleName}"]`);
     }
 
 
     employeeSuggestionItem(empName) {
-        return $(`//div[@role="listbox"]//*[contains(text(), "${empName}")]`);
+        return $(`//div[@role="listbox"]//span[text()="${empName}"]`);
     }
 
     statusOption(statusName) {
-        return $(`//div[@role="listbox"]//*[contains(text(), "${statusName}")]`);
+        return $(`//div[@role="listbox"]//span[text()="${statusName}"]`);
     }
 
     async createUser(role, empName, status, username, password) {
@@ -55,17 +59,6 @@ class AddUserPage extends Page {
 
 
         await this.saveBtn.click();
-
-        // await browser.waitUntil(
-        //     async () => {
-        //         const currentUrl = await browser.getUrl();
-        //         return currentUrl.includes('admin/viewSystemUsers');
-        //     },
-        //     {
-        //         timeout: 7000,
-        //         timeoutMsg: 'Lưu thất bại hoặc hệ thống không tự động chuyển hướng về Admin List'
-        //     }
-        // );
     }
 }
 

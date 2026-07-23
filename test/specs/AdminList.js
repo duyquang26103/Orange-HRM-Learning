@@ -4,11 +4,13 @@ import LoginPage from '../pageobjects/LoginPage.js';
 import AdminPage from '../pageobjects/AdminPage.js';
 import AddUserPage from '../pageobjects/AddUserPage.js';
 import SideMenuComponent from '../pageobjects/components/SideMenuComponent.js';
+import AddEmployeePage from '../pageobjects/AddEmployeePage.js';
+import employeeFlow from '../flows/employeeFlow.js';
 
 describe('Admin Management — Split Test Cases', () => {
 
     let testUsername;
-    const employeeName = 'Jobin Mathew Sam';
+    const employeeName = 'Nguyen Van An';
 
     before(async () => {
         await browser.maximizeWindow();
@@ -21,17 +23,24 @@ describe('Admin Management — Split Test Cases', () => {
         await SideMenuComponent.goTo('Admin');
     });
 
-    it.only('TC_01: Tạo thành công User mới với quyền Admin', async () => {
+    it.only('Tạo data test nhân viên mới thành công bằng Flow Pattern', async () => {
+        const empId = `EMP_${Math.floor(Math.random() * 1000)}`;
+
+        await employeeFlow.createNewEmployee('Nguyen', 'Van', 'An', empId);
+        await expect(AddEmployeePage.employeeProfileHeader).toHaveText('Nguyen An');
+        await expect(AddEmployeePage.employeeIdTbx).toHaveValue(empId);
+    });
+
+
+    it('TC_01: Tạo thành công User mới với quyền Admin', async () => {
+        await SideMenuComponent.goTo('Admin');
         // 1. Khởi tạo một Username ngẫu nhiên riêng cho tài khoản Admin mới này
         const randomId = Math.floor(Math.random() * 10000);
         const adminUsername = `NewAdmin_${randomId}`;
 
         await AdminPage.clickAddUser();
-
-
         await AddUserPage.createUser('Admin', employeeName, 'Enabled', adminUsername, 'Password123!'
         );
-
 
         await expect(browser).toHaveUrl(expect.stringContaining('admin/viewSystemUsers'));
 
@@ -47,6 +56,7 @@ describe('Admin Management — Split Test Cases', () => {
     });
 
     it.only('TC_02: Tạo thành công User mới với quyền ESS', async () => {
+        await SideMenuComponent.goTo('Admin');
         await AdminPage.clickAddUser();
         await AddUserPage.createUser('ESS', employeeName, 'Enabled', testUsername, 'Password123!');
 
@@ -107,7 +117,7 @@ describe('Admin Management — Split Test Cases', () => {
         await expect(AdminPage.tblRows).toBeElementsArrayOfSize(0);
     });
 
-    it.only('TC_08: Tạo user thất bại — Bỏ trống ô Username', async () => {
+    it('TC_07: Tạo user thất bại — Bỏ trống ô Username', async () => {
         await AdminPage.clickAddUser();
         await AddUserPage.createUser('ESS', employeeName, 'Enabled', '', 'Password123!');
 
@@ -119,12 +129,20 @@ describe('Admin Management — Split Test Cases', () => {
 
 
         await expect(AddUserPage.requiredUsernameMsg).toBeDisplayed();
-
-
         await expect(AddUserPage.requiredUsernameMsg).toHaveText('Required');
-
-
         await expect(browser).toHaveUrl(expect.stringContaining('admin/saveSystemUser'));
     });
 
+    it('TC_08: Tạo user thất bại — Username đã tồn tại (Trùng lặp)', async () => {
+        await AdminPage.clickAddUser();
+        await AddUserPage.createUser('Admin', employeeName, 'Enabled', 'Admin', 'Password123!');
+        await AddUserPage.duplicateUsernameMsg.waitForDisplayed({
+            timeout: 5000,
+            timeoutMsg: 'Màn hình không hiển thị lỗi Duplicate dưới ô Username sau 5 giây!'
+        });
+
+        await expect(AddUserPage.duplicateUsernameMsg).toBeDisplayed();
+        await expect(AddUserPage.duplicateUsernameMsg).toHaveText('Already exists');
+        await expect(browser).toHaveUrl(expect.stringContaining('admin/saveSystemUser'));
+    });
 });
