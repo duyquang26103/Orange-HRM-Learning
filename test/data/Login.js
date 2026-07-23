@@ -3,8 +3,7 @@ export const validUser = {
     password: 'admin123'
 };
 
-// Các case đăng nhập thất bại có cùng hành động (login) và cùng assertion
-// (errorAlert hiển thị + text "Invalid credentials") — dùng chung 1 vòng lặp DDT.
+// đăng nhập thất bại
 export const invalidLoginCases = [
     {
         tcId: 'LOGIN_TC02',

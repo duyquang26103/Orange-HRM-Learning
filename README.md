@@ -104,7 +104,7 @@ get dashboardLbl()       { return $('//h6[text()="Dashboard"]'); }   // label
 Suffix reference:
 
 | GUI Control                   | Suffix          |
-| ----------------------------- | --------------- |
+| ------------------------------ | --------------- |
 | Text input field              | `txb`           |
 | Text                          | `txt`           |
 | Text area                     | `txa`           |
@@ -219,7 +219,7 @@ Guidelines:
 ## 🧪 Existing Test Suites
 
 | Spec                         | Module | Description                                                                                                                                            |
-| ---------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ----------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `test/specs/Login.js`        | Login  | 20 test cases: happy path, validation, password case-sensitivity, SQL injection, XSS, forgot password, logout, route guard, session, boundary, unicode |
 | `test/specs/EmployeeList.js` | PIM    | Search employee by name                                                                                                                                |
 | `test/specs/Login.js`        | Login  | Basic login demo                                                                                                                                       |
