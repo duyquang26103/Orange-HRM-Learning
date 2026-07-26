@@ -24,7 +24,7 @@ export const config = {
     //
     specs: [
         // './test/specs/PersonalDetails.js'
-        './test/specs/Login.js'
+        './test/specs/Time.js'
     ],
     // specs: [
     //     path.resolve('./test/specs/PersonalDetails.js')
