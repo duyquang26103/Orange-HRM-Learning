@@ -1,15 +1,15 @@
 import Page from './BasePage.js';
 
 class LoginPage extends Page {
-    get inputUsername() {
+    get usernameTbx() {
         return $('//input[@name="username"]');
     }
 
-    get inputPassword() {
+    get passwordTbx() {
         return $('//input[@name="password"]');
     }
 
-    get btnSubmit() {
+    get submitBtn() {
         return $('button[type="submit"]');
     }
 
@@ -30,22 +30,22 @@ class LoginPage extends Page {
     }
 
     async setUsername(username) {
-        await this.inputUsername.setValue(username);
+        await this.usernameTbx.setValue(username);
     }
 
     async setPassword(password) {
-        await this.inputPassword.setValue(password);
+        await this.passwordTbx.setValue(password);
     }
 
     async clickLogin() {
-        await this.btnSubmit.click();
+        await this.submitBtn.click();
     }
 
 
     async login(username, password) {
-        await this.inputUsername.setValue(username);
-        await this.inputPassword.setValue(password);
-        await this.btnSubmit.click();
+        await this.usernameTbx.setValue(username);
+        await this.passwordTbx.setValue(password);
+        await this.submitBtn.click();
     }
 
 
