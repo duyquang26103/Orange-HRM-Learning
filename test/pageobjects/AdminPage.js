@@ -23,7 +23,6 @@ class AdminPage extends Page {
         await this.userRoleDdl.click();
         await this.dropdownOption(role).waitForDisplayed({ timeout: 3000 });
         await this.dropdownOption(role).click();
-
         await this.searchBtn.click();
         await browser.waitUntil(
             async () => (await this.searchBtn.isClickable()),

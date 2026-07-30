@@ -11,7 +11,6 @@ class AddUserPage extends Page {
     get inputConfirmPassword() { return $('//label[text()="Confirm Password"]/../following-sibling::div//input'); }
     get saveBtn() { return $('button[type="submit"]'); }
     get requiredUsernameMsg() {
-        // Đi ngược lên thẻ cha bao bọc toàn bộ cụm Input, sau đó tìm thẻ span lỗi bên dưới nó
         return $('//label[text()="Username"]/ancestor::div[contains(@class, "oxd-input-group")]//span[contains(@class, "oxd-input-field-error-message")]');
     }
 
@@ -48,24 +47,10 @@ class AddUserPage extends Page {
         await this.statusOption(status).waitForDisplayed({ timeout: 3000 });
         await this.statusOption(status).click();
 
-
         await this.inputUsername.setValue(username);
         await this.inputPassword.setValue(password);
         await this.inputConfirmPassword.setValue(password);
-
-
         await this.saveBtn.click();
-
-        // await browser.waitUntil(
-        //     async () => {
-        //         const currentUrl = await browser.getUrl();
-        //         return currentUrl.includes('admin/viewSystemUsers');
-        //     },
-        //     {
-        //         timeout: 7000,
-        //         timeoutMsg: 'Lưu thất bại hoặc hệ thống không tự động chuyển hướng về Admin List'
-        //     }
-        // );
     }
 }
 

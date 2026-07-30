@@ -27,15 +27,11 @@ describe('Admin Management — Split Test Cases', () => {
         const adminUsername = `NewAdmin_${randomId}`;
 
         await AdminPage.clickAddUser();
-
-
         await AddUserPage.createUser('Admin', employeeName, 'Enabled', adminUsername, 'Password123!'
         );
 
 
         await expect(browser).toHaveUrl(expect.stringContaining('admin/viewSystemUsers'));
-
-
         await AdminPage.searchAndFilterUser(adminUsername, 'Admin');
 
 
@@ -65,7 +61,6 @@ describe('Admin Management — Split Test Cases', () => {
     });
 
     it('TC_03: Tìm kiếm User theo chính xác Username', async () => {
-
         await AdminPage.userNameTbx.waitForEnabled({ timeout: 5000 });
         await AdminPage.userNameTbx.setValue(testUsername);
         await AdminPage.searchBtn.click();
@@ -77,7 +72,6 @@ describe('Admin Management — Split Test Cases', () => {
 
     it('TC_04: Lọc danh sách (Filter) theo User Role', async () => {
         await SideMenuComponent.goTo('Admin');
-
         await AdminPage.userNameTbx.setValue('');
 
         // Chọn filter theo role ESS
@@ -110,20 +104,13 @@ describe('Admin Management — Split Test Cases', () => {
     it.only('TC_08: Tạo user thất bại — Bỏ trống ô Username', async () => {
         await AdminPage.clickAddUser();
         await AddUserPage.createUser('ESS', employeeName, 'Enabled', '', 'Password123!');
-
         await AddUserPage.requiredUsernameMsg.waitForDisplayed({
             timeout: 5000,
             timeoutMsg: 'Màn hình không hiển thị lỗi Required dưới ô Username sau 5 giây!'
         });
 
-
-
         await expect(AddUserPage.requiredUsernameMsg).toBeDisplayed();
-
-
         await expect(AddUserPage.requiredUsernameMsg).toHaveText('Required');
-
-
         await expect(browser).toHaveUrl(expect.stringContaining('admin/saveSystemUser'));
     });
 
