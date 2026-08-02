@@ -2,6 +2,11 @@ import DashboardPage from "../pageobjects/DashboardPage.js";
 import LoginPage from "../pageobjects/LoginPage.js";
 import PunchInOutPage from "../pageobjects/PunchInOutPage.js";
 import MyTimesheetPage from "../pageobjects/MyTimesheetPage.js";
+import EmployeeTimesheetPage from "../pageobjects/EmployeeTimesheetPage.js";
+import CustomersPage from "../pageobjects/CustomersPage.js";
+import ProjectsPage from "../pageobjects/ProjectsPage.js";
+import MyAttendanceRecordPage from "../pageobjects/MyAttendanceRecordPage.js";
+import EmployeeRecordsPage from "../pageobjects/EmployeeRecordsPage.js";
 
 function randomPastMonday() {
   const weeksBack = 100 + Math.floor(Math.random() * 200);
@@ -147,6 +152,30 @@ describe("Time Module", () => {
     expect(await MyTimesheetPage.periodTxb.getValue()).toContain("2019");
   });
 
+  it.skip("TIME_TC09: Approve Timesheet (role duyệt)", async () => {});
+  it.skip("TIME_TC10: Reject Timesheet", async () => {});
+
+  it("TIME_TC11: Search Employee Timesheet theo tên", async () => {
+    await EmployeeTimesheetPage.open();
+    const picked = await EmployeeTimesheetPage.searchEmployee("a");
+    await EmployeeTimesheetPage.viewTimesheet();
+
+    await expect(EmployeeTimesheetPage.timesheetTitleLbl).toBeDisplayed();
+    const title = await EmployeeTimesheetPage.timesheetTitleLbl.getText();
+    expect(title).toContain(picked.split(" ")[0]);
+  });
+
+  it("TIME_TC12: Search Employee Timesheet nhân viên không tồn tại", async () => {
+    await EmployeeTimesheetPage.open();
+    await EmployeeTimesheetPage.employeeNameTxb.setValue("ZZZNotExist");
+    await EmployeeTimesheetPage.viewBtn.click();
+
+    await expect(EmployeeTimesheetPage.invalidLbl).toBeDisplayed();
+    await expect(EmployeeTimesheetPage.invalidLbl).toHaveText(
+      expect.stringContaining("Invalid"),
+    );
+  });
+
   it("TIME_TC13: Punch In (Attendance)", async () => {
     await PunchInOutPage.ensurePunchedOut();
     await PunchInOutPage.open();
@@ -155,4 +184,100 @@ describe("Time Module", () => {
     await expect(PunchInOutPage.punchOutLbl).toBeDisplayed();
     expect(await browser.getUrl()).toContain("punchOut");
   });
+
+  it("TIME_TC14: Punch Out (Attendance)", async () => {
+    await PunchInOutPage.ensurePunchedIn();
+    await PunchInOutPage.open();
+    await PunchInOutPage.punchOut("Kết thúc ca");
+
+    await expect(PunchInOutPage.punchInLbl).toBeDisplayed();
+    expect(await browser.getUrl()).toContain("punchIn");
+  });
+
+  it("TIME_TC15: Punch In/Out khi chưa Punch In", async () => {
+    await PunchInOutPage.ensurePunchedOut();
+    await PunchInOutPage.open();
+
+    await expect(PunchInOutPage.punchInLbl).toBeDisplayed();
+    await expect(PunchInOutPage.punchOutLbl).not.toBeDisplayed();
+  });
+
+  it("TIME_TC16: Punch In khi đã Punch In", async () => {
+    await PunchInOutPage.ensurePunchedIn();
+    await PunchInOutPage.open();
+
+    await expect(PunchInOutPage.punchOutLbl).toBeDisplayed();
+    expect(await browser.getUrl()).toContain("punchOut");
+  });
+
+  it.skip("TIME_TC17: Sửa thời gian Punch (Edit)", async () => {});
+
+  it("TIME_TC18: Xem Attendance Records theo ngày", async () => {
+    await PunchInOutPage.ensurePunchedOut();
+    await PunchInOutPage.open();
+    await PunchInOutPage.punchIn("Ca sáng thứ hai");
+
+    await EmployeeRecordsPage.open();
+    const hint = (await EmployeeRecordsPage.userNameLbl.getText()).split(
+      " ",
+    )[0];
+    await EmployeeRecordsPage.searchEmployee(hint);
+    await EmployeeRecordsPage.viewRecords();
+
+    await expect(EmployeeRecordsPage.tableBody).toBeDisplayed();
+    await expect(EmployeeRecordsPage.noRecordsLbl).not.toBeDisplayed();
+  }).timeout(120000);
+
+  it("TIME_TC19: Punch In với ghi chú Unicode/tiếng Việt", async () => {
+    await PunchInOutPage.ensurePunchedOut();
+    await PunchInOutPage.open();
+    await PunchInOutPage.punchIn("Ca sáng thứ hai");
+
+    await expect(PunchInOutPage.punchOutLbl).toBeDisplayed();
+  });
+
+  it("TIME_TC20: Cấu hình Project Info (Customers)", async () => {
+    const name = `ABC Corp ${Date.now()}`;
+    await CustomersPage.open();
+    await CustomersPage.addCustomer(name);
+
+    await expect(CustomersPage.tableBody).toHaveText(
+      expect.stringContaining(name),
+    );
+  });
+
+  it("TIME_TC21: Thêm Project mới", async () => {
+    const customer = `ABC Corp ${Date.now()}`;
+    const project = `Website Redesign ${Date.now()}`;
+    await CustomersPage.open();
+    await CustomersPage.addCustomer(customer);
+    await ProjectsPage.open();
+    await ProjectsPage.addProject(project, customer);
+
+    await expect(ProjectsPage.tableBody).toHaveText(
+      expect.stringContaining(project),
+    );
+  }).timeout(120000);
+
+  it("TIME_TC22: Thêm Project — bỏ trống tên", async () => {
+    await ProjectsPage.open();
+    await ProjectsPage.addBtn.click();
+    await ProjectsPage.saveBtn.click();
+
+    await expect(ProjectsPage.requiredLbl).toBeDisplayed();
+    await expect(ProjectsPage.requiredLbl).toHaveText("Required");
+  });
+
+  it("TIME_TC23: Reset filter Employee Timesheets", async function () {
+    if (!(await arrangeEditableTimesheet())) this.skip();
+
+    await MyTimesheetPage.resetBtn.click();
+
+    await expect(MyTimesheetPage.projectTxb).toHaveValue("");
+    await expect(MyTimesheetPage.activityDdn).toHaveText(
+      expect.stringContaining("Select"),
+    );
+  }).timeout(120000);
+
+  it.skip("TIME_TC24: Truy cập Employee Timesheets bằng user ESS", async () => {});
 });
