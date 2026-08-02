@@ -4,7 +4,7 @@ class PersonalDetailsPage extends Page {
     get headerTitle() {
         return $('//h6[text()="Personal Details"]');
     }
-    get emFristNameTbx() {
+    get emFirstNameTbx() {
         return $('//input[@name="firstName"]');
     }
     get emMiddleNameTbx() {
@@ -35,10 +35,14 @@ class PersonalDetailsPage extends Page {
         return $('//label[text()="SIN Number"]/../following-sibling::div/input');
     }
     get nationalityTbx() {
-        return $('//label[text()="Nationality"]/../following-sibling::div//div[@class="oxd-select-text-input"]');
+        return $(
+            '//label[text()="Nationality"]/../following-sibling::div//div[@class="oxd-select-text-input"]'
+        );
     }
     get martialStatusTbx() {
-        return $('//label[text()="Marital Status"]/../following-sibling::div//div[@class="oxd-select-text-input"]');
+        return $(
+            '//label[text()="Marital Status"]/../following-sibling::div//div[@class="oxd-select-text-input"]'
+        );
     }
     get dateOfBirthTbx() {
         return $('//label[text()="Date of Birth"]/../following-sibling::div//input');
@@ -51,16 +55,15 @@ class PersonalDetailsPage extends Page {
     // }
 
     getRadioGender(genderName) {
-        return $(`//label[text()="Gender"]/../following-sibling::div//label[contains(., "${genderName}")]//input`);
-    }
-    get nationalityTbx() {
-        return $('//label[text()="Nationality"]/../following-sibling::div//div[@class="oxd-select-text-input"]');
+        return $(
+            `//label[text()="Gender"]/../following-sibling::div//label[text()= "${genderName}"]//input`
+        );
     }
     get savePDBtn() {
-        return $('//p[contains(., "Required")]/following-sibling::button]');
+        return $('//p[contains(@class, "orangehrm-form-hint")]/following-sibling::button');
     }
     get saveCFBtn() {
-        return $('//h6[contains(., "Custom Fields")]/following-sibling::form//button[@type="submit"]');
+        return $('//h6[text()=  "Custom Fields"]/following-sibling::form//button[@type="submit"]');
     }
 
     get requiredErrorMsg() {
@@ -72,40 +75,56 @@ class PersonalDetailsPage extends Page {
     }
 
     async updateName(first, midle, last) {
-        await this.emFristNameTbx.click();
-        await browser.keys(['Control', 'a']);
-        await browser.keys('Backspace');
-        if (first) await this.emFristNameTbx.setValue(first);
+        await browser.waitUntil(async () => (await this.emFirstNameTbx.getValue()) !== '', {
+            timeout: 5000,
+            timeoutMsg: 'Personal details form did not finish loading',
+        });
 
-        await this.emMiddleNameTbx.click();
-        await browser.keys(['Control', 'a']);
-        await browser.keys('Backspace');
+        await this.clearField(this.emFirstNameTbx);
+        if (first) await this.emFirstNameTbx.setValue(first);
+
+        await this.clearField(this.emMiddleNameTbx);
         if (midle) await this.emMiddleNameTbx.setValue(midle);
 
-        await this.emLastNameTbx.click();
-        await browser.keys(['Control', 'a']);
-        await browser.keys('Backspace');
-        if (last) await this.emMiddleNameTbx.setValue(last);
+        await this.clearField(this.emLastNameTbx);
+        if (last) await this.emLastNameTbx.setValue(last);
 
         await this.savePDBtn.click();
-
     }
 
     async updateEmployeeId(empId) {
-        await this.employeeIdTbx.click();
-        await browser.keys(['Control', 'a']);
-        await browser.keys('Backspace');
+        await this.clearField(this.employeeIdTbx);
         await this.employeeIdTbx.setValue(empId);
         await this.savePDBtn.click();
     }
 
-    async selectNationality(countryName) {
-        await this.nationalityTbx.click();
-        const option = await $(`//div[@role="listbox"]//span[text()="${countryName}"]`);
+    async selectDropdownOption(dropdownEl, optionText) {
+        await dropdownEl.click();
+        const option = await $(`//div[@role="listbox"]//span[text()="${optionText}"]`);
         await option.click();
         await this.savePDBtn.click();
     }
 
+    async selectNationality(countryName) {
+        return this.selectDropdownOption(this.nationalityTbx, countryName);
+    }
+
+    async selectMaritalStatus(status) {
+        return this.selectDropdownOption(this.martialStatusTbx, status);
+    }
+
+    async updateDateOfBirth(dob) {
+        await this.clearField(this.dateOfBirthTbx);
+        await this.dateOfBirthTbx.setValue(dob);
+        await browser.keys(['Escape']);
+        await this.savePDBtn.click();
+    }
+
+    async selectGender(genderName) {
+        const radio = await this.getRadioGender(genderName);
+        await browser.execute((el) => el.click(), radio);
+        await this.savePDBtn.click();
+    }
 }
 
 export default new PersonalDetailsPage();

@@ -1,6 +1,6 @@
-import LoginPage from '../pageobjects/LoginPage.js';
-import DashboardPage from '../pageobjects/DashboardPage.js';
-import ForgotPasswordPage from '../pageobjects/ForgotPasswordPage.js';
+import LoginPage from '../../pageobjects/login-page/LoginPage.js';
+import DashboardPage from '../../pageobjects/dashboard-page/DashboardPage.js';
+import ForgotPasswordPage from '../../pageobjects/login-page/ForgotPasswordPage.js';
 
 const VALID_USER = 'Admin';
 const VALID_PASS = 'admin123';
@@ -135,10 +135,10 @@ describe('Login Module', () => {
     it('LOGIN_TC16: truy cập trang nội bộ khi chưa login', async () => {
         await DashboardPage.open();
 
-        await browser.waitUntil(
-            async () => (await browser.getUrl()).includes('auth/login'),
-            { timeout: 10000, timeoutMsg: 'Không bị redirect về login khi chưa đăng nhập' }
-        );
+        await browser.waitUntil(async () => (await browser.getUrl()).includes('auth/login'), {
+            timeout: 10000,
+            timeoutMsg: 'Không bị redirect về login khi chưa đăng nhập',
+        });
         await expect(LoginPage.submitBtn).toBeDisplayed();
     });
 
