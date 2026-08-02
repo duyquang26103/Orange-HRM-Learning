@@ -26,10 +26,10 @@ export const config = {
     //
     specs: [
         
-        // './test/specs/login/Login.js',
+         './test/specs/login/Login.js',
        // './test/specs/myInfo/PersonalDetails.js',
        // './test/specs/myInfo/ContactDetails.js',
-        './test/specs/myInfo/Avatar.js',
+        //'./test/specs/myInfo/Avatar.js',
     ],
 
     // Patterns to exclude.

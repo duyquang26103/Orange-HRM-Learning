@@ -1,10 +1,11 @@
 import LoginPage from '../../pageobjects/login-page/LoginPage.js';
 import DashboardPage from '../../pageobjects/dashboard-page/DashboardPage.js';
 import ForgotPasswordPage from '../../pageobjects/login-page/ForgotPasswordPage.js';
+import { credentials } from '../../data/credentials.js';
 
-const VALID_USER = 'Admin';
-const VALID_PASS = 'admin123';
-const INVALID_CREDENTIALS = 'Invalid credentials';
+const VALID_USER = credentials.admin.username;
+const VALID_PASS = credentials.admin.password;
+const INVALID_CREDENTIALS = credentials.admin.error;
 
 describe('Login Module', () => {
     beforeEach(async () => {
@@ -20,7 +21,7 @@ describe('Login Module', () => {
     });
 
     // LOGIN_TC02 | Severity: S | Priority: Critical | Bảo mật cơ bản
-    it('LOGIN_TC02: đăng nhập thất bại với password sai', async () => {
+    it ('LOGIN_TC02: đăng nhập thất bại với password sai', async () => {
         await LoginPage.login(VALID_USER, 'wrongpass');
 
         await expect(LoginPage.errorAlert).toBeDisplayed();
