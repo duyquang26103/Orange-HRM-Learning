@@ -69,10 +69,9 @@ Orange-HRM-Learning/
 │   │   ├── myInfo/
 │   │   │   └── PersonalDetails.js
 │   │   ├── pim/
-│   │   │   ├── AddEmployee.js
-│   │   │   └── EmployeeList.js
-│   │   └── leave/
-│   │       └── ApplyLeave.js
+│   │       ├── AddEmployee.js
+│   │       └── EmployeeList.js
+│   │
 │   ├── pageobjects/                    # Page Objects (POM), grouped by module
 │   │   ├── BasePage.js                 # Base class: open(path), clearField(el)
 │   │   ├── login-page/
@@ -85,10 +84,9 @@ Orange-HRM-Learning/
 │   │   ├── pim-page/
 │   │   │   ├── AddEmployeePage.js
 │   │   │   └── EmployeeListPage.js
-│   │   ├── leave-page/
-│   │   │   └── ApplyLeavePage.js
 │   │   └── components/                 # Reusable UI components (cross-module)
 │   │       └── SideMenuComponent.js
+|   |
 │   └── data/                           # Test data — seed/fixture + expected values
 │       ├── credentials.js              # Login credentials, read from .env
 │       ├── myinfo.js
