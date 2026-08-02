@@ -19,16 +19,41 @@ class PunchInOutPage extends Page {
     return $('//h6[text()="Punch In"]');
   }
 
+  async waitForPunchScreen() {
+    await browser.waitUntil(
+      async () =>
+        (await this.punchInLbl.isDisplayed()) ||
+        (await this.punchOutLbl.isDisplayed()),
+      { timeout: 10000, timeoutMsg: "Man hinh punch khong render" },
+    );
+  }
+
   async ensurePunchedOut() {
     await super.open("attendance/punchIn");
+    await this.waitForPunchScreen();
     if (await this.punchOutLbl.isDisplayed()) {
       await this.punchBtn.click();
       await this.punchInLbl.waitForDisplayed({ timeout: 10000 });
     }
   }
+
   async punchIn(note) {
     if (note) await this.noteTxa.setValue(note);
     await this.punchBtn.click();
+  }
+
+  async punchOut(note) {
+    if (note) await this.noteTxa.setValue(note);
+    await this.punchBtn.click();
+  }
+
+  async ensurePunchedIn() {
+    await super.open("attendance/punchIn");
+    await this.waitForPunchScreen();
+    if (await this.punchInLbl.isDisplayed()) {
+      await this.punchBtn.click();
+      await this.punchOutLbl.waitForDisplayed({ timeout: 10000 });
+    }
   }
 }
 

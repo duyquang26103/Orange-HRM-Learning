@@ -110,6 +110,10 @@ class MyTimesheetPage extends Page {
     return $('//button[normalize-space()="Save"]');
   }
 
+  get resetBtn() {
+    return $('//button[normalize-space()="Reset"]');
+  }
+
   async waitForRealOption() {
     await browser.waitUntil(
       async () => {
