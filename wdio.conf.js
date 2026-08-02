@@ -25,17 +25,28 @@ export const config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        
-         './test/specs/login/Login.js',
-       // './test/specs/myInfo/PersonalDetails.js',
-       // './test/specs/myInfo/ContactDetails.js',
-        //'./test/specs/myInfo/Avatar.js',
+        './test/specs/login/Login.js',
+        './test/specs/myInfo/PersonalDetails.js',
+        './test/specs/myInfo/ContactDetails.js',
+        './test/specs/myInfo/Avatar.js',
+        './test/specs/pim/AddEmployee.js',
+        './test/specs/pim/EmployeeList.js',
     ],
 
     // Patterns to exclude.
     exclude: [
         // 'path/to/excluded/files'
     ],
+
+    // Define a suite name to run it separately via CLI/CI: wdio run ./wdio.conf.js --suite <suite_name>
+    suites: {
+        login: ['./test/specs/login/Login.js'],
+        personalDetails: ['./test/specs/myInfo/PersonalDetails.js'],
+        contactDetails: ['./test/specs/myInfo/ContactDetails.js'],
+        avatar: ['./test/specs/myInfo/Avatar.js'],
+        addEmployee: ['./test/specs/pim/AddEmployee.js'],
+        employeeList: ['./test/specs/pim/EmployeeList.js'],
+    },
     //
     // ============
     // Capabilities
@@ -157,20 +168,27 @@ export const config = {
         }
     },
     capabilities: [
-        {
-            browserName: 'chrome',
-            'goog:chromeOptions': {
-                args: process.env.CI
-                    ? [
-                          '--headless=new',
-                          '--no-sandbox',
-                          '--disable-dev-shm-usage',
-                          '--disable-gpu',
-                          '--window-size=1920,1080',
-                      ]
-                    : [],
-            },
-        },
+        process.env.BROWSER === 'firefox'
+            ? {
+                  browserName: 'firefox',
+                  'moz:firefoxOptions': {
+                      args: process.env.CI ? ['-headless'] : [],
+                  },
+              }
+            : {
+                  browserName: 'chrome',
+                  'goog:chromeOptions': {
+                      args: process.env.CI
+                          ? [
+                                '--headless=new',
+                                '--no-sandbox',
+                                '--disable-dev-shm-usage',
+                                '--disable-gpu',
+                                '--window-size=1920,1080',
+                            ]
+                          : [],
+                  },
+              },
     ],
 
     /**

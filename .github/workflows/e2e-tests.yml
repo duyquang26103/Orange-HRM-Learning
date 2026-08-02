@@ -1,0 +1,75 @@
+name: E2E Tests
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    schedule:
+        - cron: '0 2 * * *'
+    workflow_dispatch:
+        inputs:
+            suite:
+                description: 'The name of the suite you want to run (login, personalDetails, contactDetails, avatar, addEmployee, employeeList), or pass (all) to run the entire test suite.'
+                required: false
+                default: 'all'
+                type: string
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                browser: [chrome, firefox]
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Run WebdriverIO tests
+              env:
+                  BASE_URL: ${{ secrets.BASE_URL }}
+                  ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+                  ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+                  BROWSER: ${{ matrix.browser }}
+                  SUITE: ${{ github.event.inputs.suite || 'all' }}
+              run: |
+                  if [ "$SUITE" = "all" ]; then
+                    pnpm run test
+                  else
+                    pnpm exec wdio run ./wdio.conf.js --suite "$SUITE"
+                  fi
+
+            # Upload screenshot khi fail — luôn chạy kể cả test fail
+            - name: Upload screenshots on failure
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: screenshots-${{ matrix.browser }}
+                  path: screenshots/
+                  if-no-files-found: ignore
+                  retention-days: 7
+
+            # Upload Allure results — luôn chạy để có report dù pass/fail
+            - name: Upload Allure results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: allure-results-${{ matrix.browser }}
+                  path: allure-results/
+                  if-no-files-found: ignore
+                  retention-days: 7
