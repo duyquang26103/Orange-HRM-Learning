@@ -28,7 +28,7 @@ describe('OrangeHRM - My Info - Contact Details', () => {
         await expect(ContactDetailsPage.phoneErrorMsg).toHaveText(testData.phoneError);
     });
 
-    it.only('MYINFO_TC13: Verify the email format is invalid.', async () => {
+    it ('MYINFO_TC13: Verify the email format is invalid.', async () => {
         const testData = dataInfo.wrongContact;
         await ContactDetailsPage.workEmailTbx.setValue(testData.email);
         await expect (ContactDetailsPage.emailErrorMsg).toBeDisplayed();

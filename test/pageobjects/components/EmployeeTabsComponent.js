@@ -1,10 +1,10 @@
 class EmployeeTabsComponent {
-    getTab(tabName) {
+    getTabLink(tabName) {
         return $(`a*=${tabName}`);
     }
 
     async goToTab(tabName) {
-        const tab = this.getTab(tabName);
+        const tab = this.getTabLink(tabName);
         await tab.waitForClickable({ timeout: 5000 });
         await tab.click();
     }

@@ -4,10 +4,10 @@ class AvatarPage extends Page {
     get headerTitle() {
         return $('//h6[text()="Change Profile Picture"]');
     }
-    get editImageBtn() {
+    get editAvatarBtn() {
         return $('.orangehrm-edit-employee-image');
     }
-    get fileInput() {
+    get fileTbx() {
         return $('input.oxd-file-input');
     }
     get saveBtn() {
@@ -19,21 +19,16 @@ class AvatarPage extends Page {
     get successToast() {
         return $('.oxd-toast-content');
     }
-    get avatarImage() {
+    get avatarImg() {
         return $('.employee-image-wrapper .employee-image');
     }
 
-    async openChangeAvatarForm() {
-        await this.editImageBtn.click();
-        await this.headerTitle.waitForDisplayed({ timeout: 5000 });
-    }
-
     async uploadFile(filePath) {
-        const input = await this.fileInput;
+        const input = await this.fileTbx;
         await browser.elementSendKeys(input.elementId, filePath);
         await browser.waitUntil(
             async () =>
-                (await this.avatarImage.getAttribute('src')).startsWith('data:') ||
+                (await this.avatarImg.getAttribute('src')).startsWith('data:') ||
                 (await this.errorMsg.isExisting()),
             { timeout: 5000, timeoutMsg: 'File selection was not processed by the form' }
         );
