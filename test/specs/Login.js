@@ -1,9 +1,10 @@
 import LoginPage from '../pageobjects/LoginPage.js';
 import DashboardPage from '../pageobjects/DashboardPage.js';
 import ForgotPasswordPage from '../pageobjects/ForgotPasswordPage.js';
+import { validUser, invalidLoginCases } from '../data/Login.js';
 
-const VALID_USER = 'Admin';
-const VALID_PASS = 'admin123';
+const VALID_USER = validUser.username;
+const VALID_PASS = validUser.password;
 const INVALID_CREDENTIALS = 'Invalid credentials';
 
 describe('Login Module', () => {
@@ -19,20 +20,18 @@ describe('Login Module', () => {
         await expect(DashboardPage.dashboardTag).toBeDisplayed();
     });
 
-    // LOGIN_TC02 | Severity: S | Priority: Critical | Bảo mật cơ bản
-    it('LOGIN_TC02: đăng nhập thất bại với password sai', async () => {
-        await LoginPage.login(VALID_USER, 'wrongpass');
+    // LOGIN_TC02, TC03, TC09, TC10, TC19, TC20 | Bảo mật cơ bản / không tiết lộ username tồn tại /
+    // password case-sensitive / SQL injection / boundary độ dài / Unicode
+    // Data-Driven: các case này cùng hành động (login) + cùng assertion (errorAlert hiển thị
+    // + text "Invalid credentials"), chỉ khác dữ liệu đầu vào -> gộp bằng forEach thay vì lặp
+    // lại thân test cho từng case. Dữ liệu khai báo tập trung ở test/data/Login.js.
+    invalidLoginCases.forEach(({ tcId, description, username, password, waitTimeout }) => {
+        it(`${tcId}: ${description}`, async () => {
+            await LoginPage.login(username, password);
 
-        await expect(LoginPage.errorAlert).toBeDisplayed();
-        await expect(LoginPage.errorAlert).toHaveText(INVALID_CREDENTIALS);
-    });
-
-    // LOGIN_TC03 | Severity: S | Priority: Critical | Không tiết lộ username tồn tại
-    it('LOGIN_TC03: đăng nhập thất bại với username sai', async () => {
-        await LoginPage.login('NotExist', VALID_PASS);
-
-        await expect(LoginPage.errorAlert).toBeDisplayed();
-        await expect(LoginPage.errorAlert).toHaveText(INVALID_CREDENTIALS);
+            await LoginPage.errorAlert.waitForDisplayed({ timeout: waitTimeout ?? 5000 });
+            await expect(LoginPage.errorAlert).toHaveText(INVALID_CREDENTIALS);
+        });
     });
 
     // LOGIN_TC04 | Severity: A | Priority: High | Validation client-side
@@ -68,22 +67,6 @@ describe('Login Module', () => {
     it.skip('LOGIN_TC08: khoảng trắng thừa trong username', async () => {
         // TODO: xác nhận hành vi trim với user trước khi assert (xem cột Note trong Excel)
         await LoginPage.login(' Admin ', VALID_PASS);
-    });
-
-    // LOGIN_TC09 | Severity: A | Priority: High | Password luôn case-sensitive
-    it('LOGIN_TC09: password phân biệt hoa thường', async () => {
-        await LoginPage.login(VALID_USER, 'Admin123');
-
-        await expect(LoginPage.errorAlert).toBeDisplayed();
-        await expect(LoginPage.errorAlert).toHaveText(INVALID_CREDENTIALS);
-    });
-
-    // LOGIN_TC10 | Severity: S | Priority: High | Bảo mật injection
-    it('LOGIN_TC10: SQL Injection cơ bản trong username', async () => {
-        await LoginPage.login("' OR '1'='1", 'abc');
-
-        await expect(LoginPage.errorAlert).toBeDisplayed();
-        await expect(LoginPage.errorAlert).toHaveText(INVALID_CREDENTIALS);
     });
 
     // LOGIN_TC11 | Severity: S | Priority: High | Bảo mật XSS
@@ -154,21 +137,5 @@ describe('Login Module', () => {
         await expect(DashboardPage.dashboardTag).toBeDisplayed();
         await browser.refresh();
         await expect(DashboardPage.dashboardTag).toBeDisplayed();
-    });
-
-    // LOGIN_TC19 | Severity: C | Priority: Low | Boundary/độ dài
-    it('LOGIN_TC19: username quá dài (>255 ký tự)', async () => {
-        await LoginPage.login('a'.repeat(300), VALID_PASS);
-
-        await LoginPage.errorAlert.waitForDisplayed({ timeout: 15000 });
-        await expect(LoginPage.errorAlert).toHaveText(INVALID_CREDENTIALS);
-    });
-
-    // LOGIN_TC20 | Severity: C | Priority: Low | Xử lý Unicode
-    it('LOGIN_TC20: ký tự đặc biệt Unicode trong username', async () => {
-        await LoginPage.login('Adminñ日本', VALID_PASS);
-
-        await expect(LoginPage.errorAlert).toBeDisplayed();
-        await expect(LoginPage.errorAlert).toHaveText(INVALID_CREDENTIALS);
     });
 });

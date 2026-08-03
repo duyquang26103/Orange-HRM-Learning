@@ -29,16 +29,10 @@ class LoginPage extends Page {
         return super.open('auth/login');
     }
 
-    /**
-     * @param {string} username
-     */
     async setUsername(username) {
         await this.usernameTbx.setValue(username);
     }
 
-    /**
-     * @param {string} password
-     */
     async setPassword(password) {
         await this.passwordTbx.setValue(password);
     }
@@ -47,26 +41,18 @@ class LoginPage extends Page {
         await this.submitBtn.click();
     }
 
-    /**
-     * @param {string} username
-     * @param {string} password
-     */
+
     async login(username, password) {
         await this.usernameTbx.setValue(username);
         await this.passwordTbx.setValue(password);
         await this.submitBtn.click();
     }
 
-    /**
-     * @returns {Promise<string>}
-     */
+
     async getErrorText() {
         return this.errorAlert.getText();
     }
 
-    /**
-     * @returns {Promise<number>}
-     */
     async getRequiredErrorCount() {
         const errors = await this.requiredErrors;
         return errors.length;

@@ -21,9 +21,6 @@ class ForgotPasswordPage extends Page {
         return $('//*[contains(text(),"Reset Password link sent")]');
     }
 
-    /**
-     * @param {string} username
-     */
     async resetPassword(username) {
         await this.usernameTbx.setValue(username);
         await this.resetBtn.click();
@@ -33,9 +30,6 @@ class ForgotPasswordPage extends Page {
         await this.cancelBtn.click();
     }
 
-    /**
-     * @returns {Promise<string>}
-     */
     async getCardTitle() {
         return this.cardTitle.getText();
     }
