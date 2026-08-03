@@ -1,8 +1,12 @@
 import Page from './BasePage.js';
 
 class AddEmployeePage extends Page {
-    open() {
-        return super.open('pim/addEmployee');
+    async open() {
+        await super.open('pim/addEmployee');
+        // Form Add Employee render qua một loader overlay; chờ input tên hiển thị và loader
+        // biến mất trước khi test điền/lưu, nếu không click bị loader chặn (flaky).
+        await this.inputFirstName.waitForDisplayed({ timeout: 20000 });
+        await this.waitForLoadersGone();
     }
 
     get inputFirstName() {
@@ -89,6 +93,10 @@ class AddEmployeePage extends Page {
 
     async enableCreateLoginDetails() {
         await this.toggleCreateLoginDetails.click();
+        // Bật switch làm hiện khối Username/Password qua một loader; chờ ô Username sẵn sàng
+        // để lần điền tiếp theo không bị race (điền trúng lúc field chưa render).
+        await this.inputUsername.waitForDisplayed({ timeout: 15000 });
+        await this.waitForLoadersGone();
     }
 
 
@@ -101,6 +109,9 @@ class AddEmployeePage extends Page {
     }
 
     async save() {
+        // Chờ loader (còn sót lại sau khi mở form / bật login details) tan trước khi bấm Save,
+        // tránh lỗi "element click intercepted" khiến submit không ăn.
+        await this.waitForLoadersGone();
         await this.btnSave.click();
     }
 

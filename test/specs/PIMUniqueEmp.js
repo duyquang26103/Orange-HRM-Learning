@@ -2,22 +2,19 @@ import LoginPage from '../pageobjects/LoginPage.js';
 import DashboardPage from '../pageobjects/DashboardPage.js';
 import AddEmployeePage from '../pageobjects/AddEmployeePage.js';
 import PersonalDetailsPage from '../pageobjects/PersonalDetailsPage.js';
-import { EmployUniq } from '../utils/EmployUniq.js';
-
-
-const VALID_USER = 'Admin';
-const VALID_PASSWORD = 'admin123';
+import { uniqueEmployee } from '../utils/EmployUniq.js';
+import { ADMIN } from '../config/env.js';
 
 describe('PIM Unique Employee Test', () => {
     before(async () => {
         await LoginPage.open();
-        await LoginPage.login(VALID_USER, VALID_PASSWORD);
+        await LoginPage.login(ADMIN.username, ADMIN.password);
         await DashboardPage.dashboardTag.waitForDisplayed({ timeout: 3000 });
 
     });
 
     it('TC_01: Tạo nhân viên với tên và Employee Id duy nhất mỗi lần chạy', async () => {
-        const employee = EmployUniq('QA');
+        const employee = uniqueEmployee('QA');
         await AddEmployeePage.open();
         await AddEmployeePage.fillName({ firstName: employee.firstName, lastName: employee.lastName });
         await AddEmployeePage.setEmployeeId(employee.employeeId);

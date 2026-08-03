@@ -5,8 +5,10 @@ import AddEmployeePage from '../pageobjects/AddEmployeePage.js';
 import PersonalDetailsPage from '../pageobjects/PersonalDetailsPage.js';
 import ContactDetailsPage from '../pageobjects/ContactDetailsPage.js';
 import EmployeeListPage from '../pageobjects/EmployeeListPage.js';
+import { ADMIN } from '../config/env.js';
 
-const DEFAULT_ADMIN = { username: 'Admin', password: 'admin123' };
+// Tài khoản admin mặc định cho mọi flow — lấy từ ENV, không hard-code.
+const DEFAULT_ADMIN = ADMIN;
 
 // Timeout dùng chung, đặt tên rõ nghĩa thay vì số magic rải rác — đây cũng là nơi duy nhất
 // cần sửa khi cần tinh chỉnh độ trễ cho một loại chờ cụ thể.

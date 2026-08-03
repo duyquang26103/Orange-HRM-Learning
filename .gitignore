@@ -4,6 +4,7 @@
 .tmp
 .idea
 .claude
+.env
 
 tmp
 node_modules

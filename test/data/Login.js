@@ -1,7 +1,9 @@
-export const validUser = {
-    username: 'Admin',
-    password: 'admin123'
-};
+import { ADMIN } from '../config/env.js';
+
+// Tài khoản đăng nhập hợp lệ lấy từ ENV (không hard-code). Các case bên dưới cố tình
+// dùng chuỗi cứng 'Admin'/'admin123' vì đó là DỮ LIỆU của kịch bản negative (sai pass,
+// đúng pass sai case...), không phải cấu hình tài khoản.
+export const validUser = ADMIN;
 
 // đăng nhập thất bại
 export const invalidLoginCases = [
