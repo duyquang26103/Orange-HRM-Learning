@@ -1,4 +1,6 @@
-// import path from 'path';
+import fs from 'node:fs';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const config = {
     //
@@ -23,17 +25,28 @@ export const config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        // './test/specs/PersonalDetails.js'
-        './test/specs/Login.js'
+        './test/specs/login/Login.js',
+        './test/specs/myInfo/PersonalDetails.js',
+        './test/specs/myInfo/ContactDetails.js',
+        './test/specs/myInfo/Avatar.js',
+        './test/specs/pim/AddEmployee.js',
+        './test/specs/pim/EmployeeList.js',
     ],
-    // specs: [
-    //     path.resolve('./test/specs/PersonalDetails.js')
-    // ],
 
     // Patterns to exclude.
     exclude: [
         // 'path/to/excluded/files'
     ],
+
+    // Define a suite name to run it separately via CLI/CI: wdio run ./wdio.conf.js --suite <suite_name>
+    suites: {
+        login: ['./test/specs/login/Login.js'],
+        personalDetails: ['./test/specs/myInfo/PersonalDetails.js'],
+        contactDetails: ['./test/specs/myInfo/ContactDetails.js'],
+        avatar: ['./test/specs/myInfo/Avatar.js'],
+        addEmployee: ['./test/specs/pim/AddEmployee.js'],
+        employeeList: ['./test/specs/pim/EmployeeList.js'],
+    },
     //
     // ============
     // Capabilities
@@ -56,17 +69,6 @@ export const config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    capabilities: [{
-        // browserName: 'firefox',
-        browserName: 'chrome',
-        browserVersion: 'stable',
-        'goog:chromeOptions': {
-            args: process.env.CI
-                ? ['--headless=new', '--no-sandbox', '--disable-gpu', '--window-size=1920,1080']
-                : []
-        }
-    }],
-
     //
     // ===================
     // Test Configurations
@@ -98,7 +100,7 @@ export const config = {
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    baseUrl: 'https://opensource-demo.orangehrmlive.com/web/index.php/',
+    baseUrl: process.env.BASE_URL || 'https://opensource-demo.orangehrmlive.com/web/index.php/',
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
@@ -126,7 +128,8 @@ export const config = {
 
     //
     // The number of times to retry the entire specfile when it fails as a whole
-    // specFileRetries: 1,
+    // Demo site công khai đôi khi flaky (xem README § Notes When Running Against the Public Demo)
+    specFileRetries: 0,
     //
     // Delay in seconds between the spec file retry attempts
     // specFileRetriesDelay: 0,
@@ -143,7 +146,7 @@ export const config = {
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: 'bdd',
-        timeout: 60000
+        timeout: 60000,
     },
 
     //
@@ -159,8 +162,35 @@ export const config = {
      * @param {object} config wdio configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      */
-    // onPrepare: function (config, capabilities) {
-    // },
+    onPrepare: function () {
+        if (!fs.existsSync('./screenshots')) {
+            fs.mkdirSync('./screenshots', { recursive: true });
+        }
+    },
+    capabilities: [
+        process.env.BROWSER === 'firefox'
+            ? {
+                  browserName: 'firefox',
+                  'moz:firefoxOptions': {
+                      args: process.env.CI ? ['-headless'] : [],
+                  },
+              }
+            : {
+                  browserName: 'chrome',
+                  'goog:chromeOptions': {
+                      args: process.env.CI
+                          ? [
+                                '--headless=new',
+                                '--no-sandbox',
+                                '--disable-dev-shm-usage',
+                                '--disable-gpu',
+                                '--window-size=1920,1080',
+                            ]
+                          : [],
+                  },
+              },
+    ],
+
     /**
      * Gets executed before a worker process is spawned and can be used to initialize specific service
      * for that worker as well as modify runtime environments in an async fashion.
@@ -240,12 +270,12 @@ export const config = {
      * @param {boolean} result.passed    true if test has passed, otherwise false
      * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
-    afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+    afterTest: async function (test, context, { passed }) {
         if (!passed) {
-            await browser.takeScreenshot();
+            const safeName = `${test.parent}-${test.title}`.replace(/[^a-zA-Z0-9]+/g, '_');
+            await browser.saveScreenshot(`./screenshots/${safeName}.png`);
         }
     },
-
 
     /**
      * Hook that gets executed after the suite has ended
@@ -290,22 +320,22 @@ export const config = {
     // onComplete: function(exitCode, config, capabilities, results) {
     // },
     /**
-    * Gets executed when a refresh happens.
-    * @param {string} oldSessionId session ID of the old session
-    * @param {string} newSessionId session ID of the new session
-    */
+     * Gets executed when a refresh happens.
+     * @param {string} oldSessionId session ID of the old session
+     * @param {string} newSessionId session ID of the new session
+     */
     // onReload: function(oldSessionId, newSessionId) {
     // }
     /**
-    * Hook that gets executed before a WebdriverIO assertion happens.
-    * @param {object} params information about the assertion to be executed
-    */
+     * Hook that gets executed before a WebdriverIO assertion happens.
+     * @param {object} params information about the assertion to be executed
+     */
     // beforeAssertion: function(params) {
     // }
     /**
-    * Hook that gets executed after a WebdriverIO assertion happened.
-    * @param {object} params information about the assertion that was executed, including its results
-    */
+     * Hook that gets executed after a WebdriverIO assertion happened.
+     * @param {object} params information about the assertion that was executed, including its results
+     */
     // afterAssertion: function(params) {
     // }
-}
+};

@@ -1,10 +1,11 @@
-import LoginPage from '../pageobjects/LoginPage.js';
-import DashboardPage from '../pageobjects/DashboardPage.js';
-import ForgotPasswordPage from '../pageobjects/ForgotPasswordPage.js';
+import LoginPage from '../../pageobjects/login-page/LoginPage.js';
+import DashboardPage from '../../pageobjects/dashboard-page/DashboardPage.js';
+import ForgotPasswordPage from '../../pageobjects/login-page/ForgotPasswordPage.js';
+import { credentials } from '../../data/credentials.js';
 
-const VALID_USER = 'Admin';
-const VALID_PASS = 'admin123';
-const INVALID_CREDENTIALS = 'Invalid credentials';
+const VALID_USER = credentials.admin.username;
+const VALID_PASS = credentials.admin.password;
+const INVALID_CREDENTIALS = credentials.admin.error;
 
 describe('Login Module', () => {
     beforeEach(async () => {
@@ -20,7 +21,7 @@ describe('Login Module', () => {
     });
 
     // LOGIN_TC02 | Severity: S | Priority: Critical | Bảo mật cơ bản
-    it('LOGIN_TC02: đăng nhập thất bại với password sai', async () => {
+    it ('LOGIN_TC02: đăng nhập thất bại với password sai', async () => {
         await LoginPage.login(VALID_USER, 'wrongpass');
 
         await expect(LoginPage.errorAlert).toBeDisplayed();
@@ -135,10 +136,10 @@ describe('Login Module', () => {
     it('LOGIN_TC16: truy cập trang nội bộ khi chưa login', async () => {
         await DashboardPage.open();
 
-        await browser.waitUntil(
-            async () => (await browser.getUrl()).includes('auth/login'),
-            { timeout: 10000, timeoutMsg: 'Không bị redirect về login khi chưa đăng nhập' }
-        );
+        await browser.waitUntil(async () => (await browser.getUrl()).includes('auth/login'), {
+            timeout: 10000,
+            timeoutMsg: 'Không bị redirect về login khi chưa đăng nhập',
+        });
         await expect(LoginPage.submitBtn).toBeDisplayed();
     });
 

@@ -1,5 +1,7 @@
 # Orange HRM — E2E Test Automation
 
+[![E2E Tests](https://github.com/duyquang26103/Orange-HRM-Learning/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/duyquang26103/Orange-HRM-Learning/actions/workflows/e2e-tests.yml)
+
 End-to-End automated tests for the **OrangeHRM** demo application, built with **WebdriverIO v9** following the **Page Object Model (POM)** pattern.
 
 - **Application under test:** https://opensource-demo.orangehrmlive.com
@@ -38,7 +40,7 @@ pnpm install
 pnpm run wdio
 
 # 3. Run a specific spec
-npx wdio run ./wdio.conf.js --spec ./test/specs/Login.js
+npx wdio run ./wdio.conf.js --spec ./test/specs/login/Login.js
 ```
 
 > **Note:** the `specs` field in [`wdio.conf.js`](wdio.conf.js) controls which specs run with `pnpm run wdio`. To run a different file, edit `specs` or use the `--spec` flag as shown above.
@@ -56,23 +58,45 @@ npx allure open allure-report
 
 ## 📁 Project Structure
 
+Specs and page objects are grouped **by module** (matching the app's own left-nav sections), each in
+its own nested folder — not flat. `BasePage.js` and `components/` stay at the root of `pageobjects/`
+since they're shared, not module-specific.
+
 ```
 Orange-HRM-Learning/
 ├── test/
-│   ├── specs/                    # Test specs (Mocha describe/it)
-│   │   ├── Login.js              # Login module
-│   │   └── EmployeeList.js       # PIM — employee search
-│   └── pageobjects/              # Page Objects (POM)
-│       ├── BasePage.js           # Base class: navigation via browser.url()
-│       ├── LoginPage.js
-│       ├── DashboardPage.js
-│       ├── ForgotPasswordPage.js
-│       ├── EmployeeListPage.js
-│       └── components/           # Reusable UI components
-│           └── SideMenuComponent.js
-├── wdio.conf.js                  # WebdriverIO config (baseUrl, capabilities, reporters...)
+│   ├── specs/                          # Test specs (Mocha describe/it), grouped by module
+│   │   ├── login/
+│   │   │   └── Login.js
+│   │   ├── myInfo/
+│   │   │   └── PersonalDetails.js
+│   │   ├── pim/
+│   │       ├── AddEmployee.js
+│   │       └── EmployeeList.js
+│   │
+│   ├── pageobjects/                    # Page Objects (POM), grouped by module
+│   │   ├── BasePage.js                 # Base class: open(path), clearField(el)
+│   │   ├── login-page/
+│   │   │   ├── LoginPage.js
+│   │   │   └── ForgotPasswordPage.js
+│   │   ├── dashboard-page/
+│   │   │   └── DashboardPage.js
+│   │   ├── myinfo-page/
+│   │   │   └── PersonalDetailsPage.js
+│   │   ├── pim-page/
+│   │   │   ├── AddEmployeePage.js
+│   │   │   └── EmployeeListPage.js
+│   │   └── components/                 # Reusable UI components (cross-module)
+│   │       └── SideMenuComponent.js
+|   |
+│   └── data/                           # Test data — seed/fixture + expected values
+│       ├── credentials.js              # Login credentials, read from .env
+│       ├── myinfo.js
+│       └── addEmployee.js
+├── wdio.conf.js                        # WebdriverIO config (baseUrl, capabilities, reporters...)
+├── eslint.config.js / .prettierrc      # Lint & format rules enforcing these conventions
 ├── package.json
-└── allure-results/               # Report output (gitignored)
+└── allure-results/                     # Report output (gitignored)
 ```
 
 ---
@@ -84,9 +108,9 @@ Page objects in `test/pageobjects/` follow a consistent convention:
 1. **Extend `BasePage`** (`class LoginPage extends Page`) to reuse `open(path)`.
 2. **Export a singleton**: `export default new LoginPage();` → import and use directly, no need to `new` it again in specs.
 3. **Inline locators** inside getters; prefer `name`/`id`/stable CSS, use XPath when needed:
-   ```js
-   get inputUsername() { return $('//input[@name="username"]'); }
-   ```
+    ```js
+    get inputUsername() { return $('//input[@name="username"]'); }
+    ```
 4. **Do NOT import `$`, `$$`, `browser`, `expect` from `@wdio/globals`** — they are global variables injected automatically by WebdriverIO. (Under pnpm, `@wdio/globals` is not hoisted, so importing it directly fails with `Cannot find module`.)
 5. **Specs only call page object methods** — never use `$()` directly in a spec.
 
@@ -135,15 +159,15 @@ Suffix reference:
 Example spec:
 
 ```js
-import LoginPage from "../pageobjects/LoginPage.js";
-import DashboardPage from "../pageobjects/DashboardPage.js";
+import LoginPage from '../../pageobjects/login-page/LoginPage.js';
+import DashboardPage from '../../pageobjects/dashboard-page/DashboardPage.js';
 
-describe("Login Module", () => {
-  it("logs in successfully", async () => {
-    await LoginPage.open();
-    await LoginPage.login("Admin", "admin123");
-    await expect(DashboardPage.dashboardTag).toBeDisplayed();
-  });
+describe('Login Module', () => {
+    it('logs in successfully', async () => {
+        await LoginPage.open();
+        await LoginPage.login('Admin', 'admin123');
+        await expect(DashboardPage.dashboardTag).toBeDisplayed();
+    });
 });
 ```
 
@@ -151,14 +175,18 @@ describe("Login Module", () => {
 
 ## 📛 File & Spec Naming
 
-| File type        | Pattern              | Location                       | Example                            |
-| ---------------- | -------------------- | ------------------------------ | ---------------------------------- |
-| Spec (test file) | `<Feature>.js`       | `test/specs/`                  | `Login.js`, `EmployeeList.js`      |
-| Page object      | `<Name>Page.js`      | `test/pageobjects/`            | `LoginPage.js`, `DashboardPage.js` |
-| Component        | `<Name>Component.js` | `test/pageobjects/components/` | `SideMenuComponent.js`             |
+| File type        | Pattern              | Location                          | Example                                                   |
+| ---------------- | -------------------- | --------------------------------- | --------------------------------------------------------- |
+| Spec (test file) | `<Feature>.js`       | `test/specs/<module>/`            | `login/Login.js`, `pim/EmployeeList.js`                   |
+| Page object      | `<Name>Page.js`      | `test/pageobjects/<module>-page/` | `login-page/LoginPage.js`, `pim-page/EmployeeListPage.js` |
+| Component        | `<Name>Component.js` | `test/pageobjects/components/`    | `SideMenuComponent.js`                                    |
 
 - Use **PascalCase** for the `<Feature>` / `<Name>` part, matching the class name inside.
 - One page object class per file; the class name matches the file name (`class LoginPage` → `LoginPage.js`).
+- `<module>` groups files by the app's own menu module — `login`, `myInfo`, `pim`, `leave`, etc. The
+  matching page-object folder is `<module>-page` (e.g. `pim` specs pair with `pim-page` page objects).
+  `BasePage.js` and `components/` are the only exceptions — they live at the root of `pageobjects/`
+  because they're shared across modules, not specific to one.
 
 ---
 
@@ -166,17 +194,17 @@ describe("Login Module", () => {
 
 - **`describe`** = the feature/module under test — e.g. `describe('Login Module', ...)`, `describe('Employee List', ...)`.
 - **`it`** = one test case, titled **`<TC ID>: <short description>`**.
-  - Specs generated from a test-case doc/Excel use the **module-prefixed ID** so it traces back to the source: `it('LOGIN_TC01: đăng nhập thành công với tài khoản hợp lệ', ...)`.
+    - Specs generated from a test-case doc/Excel use the **module-prefixed ID** so it traces back to the source: `it('LOGIN_TC01: đăng nhập thành công với tài khoản hợp lệ', ...)`.
 - One scenario per `it` — keep each test **atomic** and independently runnable.
 - All test callbacks are `async` and every WDIO action is `await`-ed.
 
 ```js
-describe("Login Module", () => {
-  it("LOGIN_TC01: logs in successfully with valid credentials", async () => {
-    await LoginPage.open();
-    await LoginPage.login("Admin", "admin123");
-    await expect(DashboardPage.dashboardTag).toBeDisplayed();
-  });
+describe('Login Module', () => {
+    it('LOGIN_TC01: logs in successfully with valid credentials', async () => {
+        await LoginPage.open();
+        await LoginPage.login('Admin', 'admin123');
+        await expect(DashboardPage.dashboardTag).toBeDisplayed();
+    });
 });
 ```
 
@@ -188,24 +216,24 @@ Choose the hook based on how much isolation each test needs:
 
 - **`before`** — run **once** per `describe` for shared, read-only setup that tests won't corrupt. Example: log in once, then run several search tests.
 
-  ```js
-  describe("Employee List", () => {
-    before(async () => {
-      await LoginPage.open();
-      await LoginPage.login("Admin", "admin123");
+    ```js
+    describe('Employee List', () => {
+        before(async () => {
+            await LoginPage.open();
+            await LoginPage.login('Admin', 'admin123');
+        });
+        // it(...) blocks reuse the same logged-in session
     });
-    // it(...) blocks reuse the same logged-in session
-  });
-  ```
+    ```
 
 - **`beforeEach`** — run **before every `it`** to reset state so tests don't depend on each other. Example: the Login suite mixes logged-in and logged-out cases, so it clears the session before each test:
-  ```js
-  beforeEach(async () => {
-    // auth/logout destroys any existing session and returns a fresh login page
-    await browser.url("auth/logout");
-    await LoginPage.inputUsername.waitForDisplayed({ timeout: 10000 });
-  });
-  ```
+    ```js
+    beforeEach(async () => {
+        // auth/logout destroys any existing session and returns a fresh login page
+        await browser.url('auth/logout');
+        await LoginPage.inputUsername.waitForDisplayed({ timeout: 10000 });
+    });
+    ```
 
 Guidelines:
 
@@ -218,11 +246,13 @@ Guidelines:
 
 ## 🧪 Existing Test Suites
 
-| Spec                         | Module | Description                                                                                                                                            |
-| ---------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `test/specs/Login.js`        | Login  | 20 test cases: happy path, validation, password case-sensitivity, SQL injection, XSS, forgot password, logout, route guard, session, boundary, unicode |
-| `test/specs/EmployeeList.js` | PIM    | Search employee by name                                                                                                                                |
-| `test/specs/Login.js`        | Login  | Basic login demo                                                                                                                                       |
+| Spec                                   | Module  | Description                                                                                                                                            |
+| -------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `test/specs/login/Login.js`            | Login   | 20 test cases: happy path, validation, password case-sensitivity, SQL injection, XSS, forgot password, logout, route guard, session, boundary, unicode |
+| `test/specs/myInfo/PersonalDetails.js` | My Info | View + update Personal Details (First/Middle/Last Name), self-seeds known data in `before()` so it doesn't depend on prior demo state                  |
+| `test/specs/pim/EmployeeList.js`       | PIM     | Search employee by name                                                                                                                                |
+| `test/specs/pim/AddEmployee.js`        | PIM     | Add employee (with/without ESS login details), required-field validation                                                                               |
+| `test/specs/leave/ApplyLeave.js`       | Leave   | Apply Leave — valid submission + validation cases (blank leave type / from-date, invalid date range)                                                   |
 
 ---
 
