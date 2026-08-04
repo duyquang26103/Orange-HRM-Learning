@@ -49,7 +49,7 @@ jobs:
           SUITE: ${{ github.event.inputs.suite || 'all' }}
         run: |
           if [ "$SUITE" = "all" ]; then
-            pnpm run test
+            pnpm run wdio
           else
             pnpm exec wdio run ./wdio.conf.js --suite "$SUITE"
           fi
