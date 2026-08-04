@@ -1,4 +1,4 @@
-import Page from './BasePage.js';
+import Page from '../BasePage.js';
 
 class DashboardPage extends Page {
     open() {

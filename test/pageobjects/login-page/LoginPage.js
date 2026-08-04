@@ -1,4 +1,4 @@
-import Page from './BasePage.js';
+import Page from '../BasePage.js';
 
 class LoginPage extends Page {
     get usernameTbx() {
