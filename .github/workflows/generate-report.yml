@@ -118,4 +118,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: allure-report
           publish_dir: allure-history # khớp với allure_history ở trên
-          force_orphan: true
