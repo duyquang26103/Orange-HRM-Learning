@@ -36,3 +36,45 @@ jobs:
           name: allure-results
           path: allure-results/
           if-no-files-found: ignore
+  publish-report:
+    needs: smoke-test
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Tải allure-results (kết quả thô) mà job test đã upload
+      - name: Download allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      # Lấy lịch sử report cũ từ branch allure về
+      # (để giữ trend qua các lần chạy)
+      - name: Load report history
+        uses: actions/checkout@v4
+        continue-on-error: true # lần chạy đầu chưa có gì, bỏ qua lỗi
+        with:
+          ref: allure # branch chứa report
+          path: allure-history
+
+      # Generate report có gộp lịch sử
+      - name: Build Allure report
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: allure-results # kết quả lần này
+          allure_history: allure-history/allure-history # lịch sử cũ
+          keep_reports: 30 # giữ tối đa 30 lần chạy gần nhất
+
+      # Publish lên branch allure
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: allure # ghi vào branch allure
+          publish_dir: allure-history # thư mục report đã build
