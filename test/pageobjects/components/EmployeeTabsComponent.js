@@ -5,7 +5,7 @@ class EmployeeTabsComponent {
 
     async goToTab(tabName) {
         const tab = this.getTabLink(tabName);
-        await tab.waitForClickable({ timeout: 5000 });
+        await tab.waitForClickable();
         await tab.click();
     }
 }

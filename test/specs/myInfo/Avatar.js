@@ -13,9 +13,9 @@ describe('OrangeHRM - My Info - Avatar', () => {
 
     beforeEach(async () => {
         await SideMenuComponent.goTo('My Info');
-        await PersonalDetailsPage.headerTitle.waitForDisplayed({ timeout: 5000 });
+        await PersonalDetailsPage.headerTitle.waitForDisplayed();
         await AvatarPage.editAvatarBtn.click();
-        await AvatarPage.headerTitle.waitForDisplayed({ timeout: 5000 });
+        await AvatarPage.headerTitle.waitForDisplayed();
     });
 
     it ('MYINFO_TC18: Upload Avatar with a valid image)', async () => {

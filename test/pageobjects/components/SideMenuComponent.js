@@ -18,7 +18,7 @@ class SideMenuComponent {
     async goTo(moduleName) {
         await this.searchMenuTbx.setValue(moduleName);
         const menuItem = $(`a*=${moduleName}`);
-        await menuItem.waitForDisplayed({ timeout: 5000 });
+        await menuItem.waitForDisplayed();
         await menuItem.click();
     }
 }

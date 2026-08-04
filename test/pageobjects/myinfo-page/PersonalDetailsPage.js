@@ -47,22 +47,16 @@ class PersonalDetailsPage extends Page {
     get dateOfBirthTbx() {
         return $('//label[text()="Date of Birth"]/../following-sibling::div//input');
     }
-    // get maleRad() {
-    //     return $('//label[contains(., "Male")]/input');
-    // }
-    // get femaleRad() {
-    //     return $('//label[contains(., "Female")]/input');
-    // }
 
     getRadioGender(genderName) {
         return $(
             `//label[text()="Gender"]/../following-sibling::div//label[text()= "${genderName}"]//input`
         );
     }
-    get savePDBtn() {
+    get savePersonalDetailsBtn() {
         return $('//p[contains(@class, "orangehrm-form-hint")]/following-sibling::button');
     }
-    get saveCFBtn() {
+    get saveCustomFieldsBtn() {
         return $('//h6[text()=  "Custom Fields"]/following-sibling::form//button[@type="submit"]');
     }
 
@@ -75,10 +69,7 @@ class PersonalDetailsPage extends Page {
     }
 
     async updateName(first, midle, last) {
-        await browser.waitUntil(async () => (await this.emFirstNameTbx.getValue()) !== '', {
-            timeout: 5000,
-            timeoutMsg: 'Personal details form did not finish loading',
-        });
+        await expect(this.emFirstNameTbx).not.toHaveValue('');
 
         await this.clearField(this.emFirstNameTbx);
         if (first) await this.emFirstNameTbx.setValue(first);
@@ -89,20 +80,20 @@ class PersonalDetailsPage extends Page {
         await this.clearField(this.emLastNameTbx);
         if (last) await this.emLastNameTbx.setValue(last);
 
-        await this.savePDBtn.click();
+        await this.savePersonalDetailsBtn.click();
     }
 
     async updateEmployeeId(empId) {
         await this.clearField(this.employeeIdTbx);
         await this.employeeIdTbx.setValue(empId);
-        await this.savePDBtn.click();
+        await this.savePersonalDetailsBtn.click();
     }
 
     async selectDropdownOption(dropdownEl, optionText) {
         await dropdownEl.click();
         const option = await $(`//div[@role="listbox"]//span[text()="${optionText}"]`);
         await option.click();
-        await this.savePDBtn.click();
+        await this.savePersonalDetailsBtn.click();
     }
 
     async selectNationality(countryName) {
@@ -117,13 +108,13 @@ class PersonalDetailsPage extends Page {
         await this.clearField(this.dateOfBirthTbx);
         await this.dateOfBirthTbx.setValue(dob);
         await browser.keys(['Escape']);
-        await this.savePDBtn.click();
+        await this.savePersonalDetailsBtn.click();
     }
 
     async selectGender(genderName) {
         const radio = await this.getRadioGender(genderName);
         await browser.execute((el) => el.click(), radio);
-        await this.savePDBtn.click();
+        await this.savePersonalDetailsBtn.click();
     }
 }
 

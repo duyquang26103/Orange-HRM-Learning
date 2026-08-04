@@ -34,11 +34,8 @@ class ContactDetailsPage extends Page {
     }
 
     async waitForFormLoaded() {
-        await this.headerTitle.waitForDisplayed({ timeout: 5000 });
-        await browser.waitUntil(async () => (await this.street1Tbx.getValue()) !== '', {
-            timeout: 5000,
-            timeoutMsg: 'Contact details form did not finish loading',
-        });
+        await this.headerTitle.waitForDisplayed();
+        await expect(this.street1Tbx).not.toHaveValue('');
     }
 
     async updateContact(street, city, phone) {

@@ -9,11 +9,11 @@ describe('OrangeHRM - My Info - Personal Details', () => {
         await LoginPage.open();
         await LoginPage.login(credentials.admin.username, credentials.admin.password);
         await SideMenuComponent.goTo('My Info');
-        await PersonalDetailsPage.headerTitle.waitForDisplayed({ timeout: 5000 });
+        await PersonalDetailsPage.headerTitle.waitForDisplayed();
         
         const seed = dataInfo.seedPersonalDetails;
         await PersonalDetailsPage.updateName(seed.firstName, seed.middleName, seed.lastName);
-        await PersonalDetailsPage.successToast.waitForDisplayed({ timeout: 5000 });
+        await PersonalDetailsPage.successToast.waitForDisplayed();
         await browser.refresh();
     });
 
@@ -46,8 +46,8 @@ describe('OrangeHRM - My Info - Personal Details', () => {
 
         await PersonalDetailsPage.clearField(PersonalDetailsPage.emFirstNameTbx);
         await PersonalDetailsPage.emFirstNameTbx.setValue(seed.firstName);
-        await PersonalDetailsPage.savePDBtn.click();
-        await PersonalDetailsPage.successToast.waitForDisplayed({ timeout: 5000 });
+        await PersonalDetailsPage.savePersonalDetailsBtn.click();
+        await PersonalDetailsPage.successToast.waitForDisplayed();
     });
 
     it('MYINFO_TC04: Input Employee ID', async () => {
@@ -103,10 +103,7 @@ describe('OrangeHRM - My Info - Personal Details', () => {
         await expect(PersonalDetailsPage.requiredErrorMsg).toHaveText(testData.expectedError);
 
         await PersonalDetailsPage.updateDateOfBirth(dataInfo.validDOB.input);
-        await browser.waitUntil(async () => !(await PersonalDetailsPage.requiredErrorMsg.isExisting()), {
-            timeout: 5000,
-            timeoutMsg: 'DOB validation error did not clear after restoring valid value',
-        });
+        await expect(PersonalDetailsPage.requiredErrorMsg).not.toExist();
     });
 
     it('MYINFO_TC10: Choose Gender', async () => {

@@ -10,7 +10,7 @@ const INVALID_CREDENTIALS = credentials.admin.error;
 describe('Login Module', () => {
     beforeEach(async () => {
         await browser.url('auth/logout');
-        await LoginPage.usernameTbx.waitForDisplayed({ timeout: 10000 });
+        await LoginPage.usernameTbx.waitForDisplayed();
     });
 
     // LOGIN_TC01 | Severity: S | Priority: Critical | Happy path
@@ -137,7 +137,6 @@ describe('Login Module', () => {
         await DashboardPage.open();
 
         await browser.waitUntil(async () => (await browser.getUrl()).includes('auth/login'), {
-            timeout: 10000,
             timeoutMsg: 'Không bị redirect về login khi chưa đăng nhập',
         });
         await expect(LoginPage.submitBtn).toBeDisplayed();

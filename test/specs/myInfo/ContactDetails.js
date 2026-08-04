@@ -11,27 +11,27 @@ describe('OrangeHRM - My Info - Contact Details', () => {
         await LoginPage.login(credentials.admin.username, credentials.admin.password);
         await SideMenuComponent.goTo('My Info');
         await EmployeeTabsComponent.goToTab('Contact Details');
-        await ContactDetailsPage.headerTitle.waitForDisplayed({ timeout: 5000 });
+        await ContactDetailsPage.headerTitle.waitForDisplayed();
     });
 
     it('MYINFO_TC11: Update Contact Details', async () => {
         const testData = dataInfo.updateContact;
         await ContactDetailsPage.updateContact(testData.street,testData.city,testData.phone);
-        await expect (ContactDetailsPage.successToast).toBeDisplayed();
+        await expect(ContactDetailsPage.successToast).toBeDisplayed();
         await expect(ContactDetailsPage.successToast).toHaveText( expect.stringContaining('Success'));
     });
 
-    it ('MYINFO_TC12: Verify the number contains letters.', async () => {
+    it('MYINFO_TC12: Verify the number contains letters.', async () => {
         const testData = dataInfo.wrongContact;
         await ContactDetailsPage.mobileTbx.setValue(testData.phone);
-        await expect (ContactDetailsPage.phoneErrorMsg).toBeDisplayed();
+        await expect(ContactDetailsPage.phoneErrorMsg).toBeDisplayed();
         await expect(ContactDetailsPage.phoneErrorMsg).toHaveText(testData.phoneError);
     });
 
-    it ('MYINFO_TC13: Verify the email format is invalid.', async () => {
+    it('MYINFO_TC13: Verify the email format is invalid.', async () => {
         const testData = dataInfo.wrongContact;
         await ContactDetailsPage.workEmailTbx.setValue(testData.email);
-        await expect (ContactDetailsPage.emailErrorMsg).toBeDisplayed();
+        await expect(ContactDetailsPage.emailErrorMsg).toBeDisplayed();
         await expect(ContactDetailsPage.emailErrorMsg).toHaveText(testData.emailError);
     });
 
@@ -46,13 +46,13 @@ describe('OrangeHRM - My Info - Contact Details', () => {
 
         await expect(ContactDetailsPage.successToast).toBeDisplayed();
 
-        let alertOpened = true;
+        let isAlertOpened = true;
         try {
             await browser.getAlertText();
         } catch {
-            alertOpened = false;
+            isAlertOpened = false;
         }
-        expect(alertOpened).toBe(false);
+        expect(isAlertOpened).toBe(false);
 
         await browser.refresh();
         await ContactDetailsPage.waitForFormLoaded();

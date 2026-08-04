@@ -30,7 +30,7 @@ class AvatarPage extends Page {
             async () =>
                 (await this.avatarImg.getAttribute('src')).startsWith('data:') ||
                 (await this.errorMsg.isExisting()),
-            { timeout: 5000, timeoutMsg: 'File selection was not processed by the form' }
+            { timeoutMsg: 'File selection was not processed by the form' }
         );
     }
 

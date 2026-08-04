@@ -12,8 +12,6 @@ export default [
             globals: {
                 ...globals.node,
                 ...globals.mocha,
-                // WebdriverIO injects these globally at runtime — do NOT import them.
-                // See README § Page Object Conventions.
                 browser: 'readonly',
                 driver: 'readonly',
                 multiremotebrowser: 'readonly',

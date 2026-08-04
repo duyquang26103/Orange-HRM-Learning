@@ -20,7 +20,7 @@ describe('PIM - Add Employee', () => {
             lastName: uniqueLastName,
         });
 
-        await AddEmployeePage.personalDetailsHeaderLbl.waitForDisplayed({ timeout: 10000 });
+        await AddEmployeePage.personalDetailsHeaderLbl.waitForDisplayed();
         expect(await browser.getUrl()).toContain('viewPersonalDetails');
         await expect(AddEmployeePage.firstNameTbx).toHaveValue(testData.firstName);
         await expect(AddEmployeePage.lastNameTbx).toHaveValue(uniqueLastName);
@@ -35,6 +35,7 @@ describe('PIM - Add Employee', () => {
         await AddEmployeePage.saveBtn.click();
 
         await expect(AddEmployeePage.requiredErrorMsgs).toBeElementsArrayOfSize(1);
+        await expect(AddEmployeePage.firstNameErrorMsg).toHaveText('Required');
         expect(await browser.getUrl()).toContain('addEmployee');
     });
 
@@ -53,7 +54,9 @@ describe('PIM - Add Employee', () => {
             password: testData.password,
         });
 
-        await AddEmployeePage.personalDetailsHeaderLbl.waitForDisplayed({ timeout: 10000 });
+        await AddEmployeePage.personalDetailsHeaderLbl.waitForDisplayed();
         expect(await browser.getUrl()).toContain('viewPersonalDetails');
+        await expect(AddEmployeePage.firstNameTbx).toHaveValue(testData.firstName);
+        await expect(AddEmployeePage.lastNameTbx).toHaveValue(uniqueLastName);
     });
 });

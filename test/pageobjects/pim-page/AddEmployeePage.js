@@ -53,6 +53,10 @@ class AddEmployeePage extends Page {
         return $$('.oxd-input-field-error-message');
     }
 
+    get firstNameErrorMsg() {
+        return $('//input[@name="firstName"]/parent::div/following-sibling::span');
+    }
+
     get successToastLbl() {
         return $('.oxd-toast-content');
     }
@@ -62,17 +66,14 @@ class AddEmployeePage extends Page {
     }
 
     async setEmployeeId(employeeId) {
-        await browser.waitUntil(async () => (await this.employeeIdTbx.getValue()) !== '', {
-            timeout: 5000,
-            timeoutMsg: 'Employee Id field did not load its default value in time',
-        });
+        await expect(this.employeeIdTbx).not.toHaveValue('');
         await this.clearField(this.employeeIdTbx);
         await this.employeeIdTbx.setValue(employeeId);
     }
 
     async enableLoginDetails(username, password) {
         await this.createLoginDetailsCkb.click();
-        await this.usernameTbx.waitForDisplayed({ timeout: 5000 });
+        await this.usernameTbx.waitForDisplayed();
         await this.usernameTbx.setValue(username);
         await this.passwordTbx.setValue(password);
         await this.confirmPasswordTbx.setValue(password);
