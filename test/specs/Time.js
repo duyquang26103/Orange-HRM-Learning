@@ -7,6 +7,7 @@ import CustomersPage from "../pageobjects/CustomersPage.js";
 import ProjectsPage from "../pageobjects/ProjectsPage.js";
 import MyAttendanceRecordPage from "../pageobjects/MyAttendanceRecordPage.js";
 import EmployeeRecordsPage from "../pageobjects/EmployeeRecordsPage.js";
+import { adminUser, invalidHourCases } from "../data/time.data.js";
 
 function randomPastMonday() {
   const weeksBack = 100 + Math.floor(Math.random() * 200);
@@ -44,7 +45,7 @@ async function arrangeTimesheetWithHours() {
 describe("Time Module", () => {
   before(async () => {
     await LoginPage.open();
-    await LoginPage.login("Admin", "admin123");
+    await LoginPage.login(adminUser.username, adminUser.password);
     await DashboardPage.dashboardTag.waitForDisplayed({ timeout: 10000 });
   });
 
@@ -85,35 +86,22 @@ describe("Time Module", () => {
     await expect(MyTimesheetPage.submitBtn).not.toBeDisplayed();
   }).timeout(120000);
 
-  it("TIME_TC04: Nhập giờ chứa ký tự chữ", async function () {
-    if (!(await arrangeEditableTimesheet())) this.skip();
+  invalidHourCases.forEach((data) => {
+    it(`${data.id}: ${data.title}`, async function () {
+      if (!(await arrangeEditableTimesheet())) this.skip();
 
-    await MyTimesheetPage.enterHours(0, "abc");
+      await MyTimesheetPage.enterHours(0, data.value);
 
-    await expect(MyTimesheetPage.hourErrorLbl).toBeDisplayed();
-    await expect(MyTimesheetPage.hourErrorLbl).toHaveText(
-      expect.stringContaining("Less Than 24"),
-    );
+      await expect(MyTimesheetPage.hourErrorLbl).toBeDisplayed();
+      await expect(MyTimesheetPage.hourErrorLbl).toHaveText(
+        expect.stringContaining("Less Than 24"),
+      );
 
-    await MyTimesheetPage.saveBtn.click();
-    await expect(MyTimesheetPage.saveBtn).toBeDisplayed();
-    await expect(MyTimesheetPage.hourErrorLbl).toBeDisplayed();
-  }).timeout(120000);
-
-  it("TIME_TC05: Nhập giờ vượt quá 24h / ngày", async function () {
-    if (!(await arrangeEditableTimesheet())) this.skip();
-
-    await MyTimesheetPage.enterHours(0, "30");
-
-    await expect(MyTimesheetPage.hourErrorLbl).toBeDisplayed();
-    await expect(MyTimesheetPage.hourErrorLbl).toHaveText(
-      expect.stringContaining("Less Than 24"),
-    );
-
-    await MyTimesheetPage.saveBtn.click();
-    await expect(MyTimesheetPage.saveBtn).toBeDisplayed();
-    await expect(MyTimesheetPage.hourErrorLbl).toBeDisplayed();
-  }).timeout(120000);
+      await MyTimesheetPage.saveBtn.click();
+      await expect(MyTimesheetPage.saveBtn).toBeDisplayed();
+      await expect(MyTimesheetPage.hourErrorLbl).toBeDisplayed();
+    }).timeout(120000);
+  });
 
   it("TIME_TC06: Nhập giờ định dạng HH:MM", async function () {
     if (!(await arrangeEmptyTimesheet())) this.skip();
