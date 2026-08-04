@@ -23,7 +23,6 @@ export const config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        // './test/specs/PersonalDetails.js'
         './test/specs/Login.js'
     ],
     // specs: [
