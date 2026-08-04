@@ -1,0 +1,79 @@
+name: Smoke Test
+
+on:
+  pull_request:
+    types: [labeled, synchronize, reopened]
+
+jobs:
+  smoke-test:
+    if: contains(github.event.pull_request.labels.*.name, 'smoke-test')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run smoke tests (Chrome stable)
+        run: pnpm run wdio
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+          if-no-files-found: ignore
+  publish-report:
+    needs: smoke-test
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Tải allure-results (kết quả thô) mà job test đã upload
+      - name: Download allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      # Lấy lịch sử report cũ từ branch allure về
+      # (để giữ trend qua các lần chạy)
+      - name: Load report history
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: allure
+          path: gh-pages-branch
+
+      - name: Build Allure report
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: allure-results
+          allure_history: allure-history # action sẽ TẠO thư mục này
+          gh_pages: gh-pages-branch/allure-history # đọc history cũ (nếu có) từ đây
+          keep_reports: 30
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: allure
+          publish_dir: allure-history
