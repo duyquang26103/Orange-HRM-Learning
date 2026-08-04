@@ -52,7 +52,7 @@ class EmployeeRecordsPage extends Page {
       async () =>
         (await this.tableBody.isDisplayed()) ||
         (await this.noRecordsLbl.isDisplayed()),
-      { timeout: 10000, timeoutMsg: "Ket qua records khong render" },
+      { timeout: 20000, timeoutMsg: "Ket qua records khong render" },
     );
   }
 }

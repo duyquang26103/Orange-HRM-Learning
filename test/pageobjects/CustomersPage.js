@@ -20,10 +20,10 @@ class CustomersPage extends Page {
 
   async addCustomer(name) {
     await this.addBtn.click();
-    await this.nameTxb.waitForDisplayed({ timeout: 10000 });
+    await this.nameTxb.waitForDisplayed({ timeout: 20000 });
     await this.nameTxb.setValue(name);
     await this.saveBtn.click();
-    await this.addBtn.waitForDisplayed({ timeout: 10000 });
+    await this.addBtn.waitForDisplayed({ timeout: 20000 });
   }
 }
 

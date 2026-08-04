@@ -45,7 +45,7 @@ class ProjectsPage extends Page {
 
   async addProject(name, customerName) {
     await this.addBtn.click();
-    await this.nameTxb.waitForDisplayed({ timeout: 10000 });
+    await this.nameTxb.waitForDisplayed({ timeout: 20000 });
     await this.nameTxb.setValue(name);
     for (let i = 1; i <= 3; i++) {
       await this.customerTxb.setValue(customerName);

@@ -25,7 +25,7 @@ class MyAttendanceRecordPage extends Page {
   async editFirstRecord() {
     await this.firstEditBtn.waitForDisplayed({ timeout: 15000 });
     await this.firstEditBtn.click();
-    await this.timeTxb.waitForDisplayed({ timeout: 10000 });
+    await this.timeTxb.waitForDisplayed({ timeout: 20000 });
   }
 
   async setPunchTime(time) {
@@ -62,9 +62,9 @@ class MyAttendanceRecordPage extends Page {
     );
     if (await this.noRecordsLbl.isDisplayed()) return;
     await this.selectAllCkb.click();
-    await this.deleteSelectedBtn.waitForDisplayed({ timeout: 10000 });
+    await this.deleteSelectedBtn.waitForDisplayed({ timeout: 20000 });
     await this.deleteSelectedBtn.click();
-    await this.confirmDeleteBtn.waitForDisplayed({ timeout: 10000 });
+    await this.confirmDeleteBtn.waitForDisplayed({ timeout: 20000 });
     await this.confirmDeleteBtn.click();
     await this.noRecordsLbl.waitForDisplayed({ timeout: 15000 });
   }

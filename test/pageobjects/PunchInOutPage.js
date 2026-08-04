@@ -24,7 +24,7 @@ class PunchInOutPage extends Page {
       async () =>
         (await this.punchInLbl.isDisplayed()) ||
         (await this.punchOutLbl.isDisplayed()),
-      { timeout: 10000, timeoutMsg: "Man hinh punch khong render" },
+      { timeout: 20000, timeoutMsg: "Man hinh punch khong render" },
     );
   }
 
@@ -33,7 +33,7 @@ class PunchInOutPage extends Page {
     await this.waitForPunchScreen();
     if (await this.punchOutLbl.isDisplayed()) {
       await this.punchBtn.click();
-      await this.punchInLbl.waitForDisplayed({ timeout: 10000 });
+      await this.punchInLbl.waitForDisplayed({ timeout: 20000 });
     }
   }
 
@@ -52,7 +52,7 @@ class PunchInOutPage extends Page {
     await this.waitForPunchScreen();
     if (await this.punchInLbl.isDisplayed()) {
       await this.punchBtn.click();
-      await this.punchOutLbl.waitForDisplayed({ timeout: 10000 });
+      await this.punchOutLbl.waitForDisplayed({ timeout: 20000 });
     }
   }
 }

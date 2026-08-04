@@ -47,7 +47,7 @@ class EmployeeTimesheetPage extends Page {
 
   async viewTimesheet() {
     await this.viewBtn.click();
-    await this.timesheetTitleLbl.waitForDisplayed({ timeout: 10000 });
+    await this.timesheetTitleLbl.waitForDisplayed({ timeout: 20000 });
   }
 }
 

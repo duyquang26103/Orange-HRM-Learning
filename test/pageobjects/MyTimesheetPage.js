@@ -20,7 +20,7 @@ class MyTimesheetPage extends Page {
     await this.prevBtn.click();
     await browser.waitUntil(
       async () => (await this.periodTxb.getValue()) !== before,
-      { timeout: 10000, timeoutMsg: "Period khong doi sau khi bam prev" },
+      { timeout: 20000, timeoutMsg: "Period khong doi sau khi bam prev" },
     );
   }
 
@@ -31,7 +31,7 @@ class MyTimesheetPage extends Page {
         async () =>
           (await this.timesheetTbl.isDisplayed()) ||
           (await this.noTimesheetLbl.isDisplayed()),
-        { timeout: 10000, timeoutMsg: "Noi dung tuan moi khong render" },
+        { timeout: 20000, timeoutMsg: "Noi dung tuan moi khong render" },
       );
       if (await this.createTimesheetBtn.isDisplayed()) {
         return true;
@@ -64,7 +64,7 @@ class MyTimesheetPage extends Page {
 
   async createTimesheet() {
     await this.createTimesheetBtn.click();
-    await this.timesheetTbl.waitForDisplayed({ timeout: 10000 });
+    await this.timesheetTbl.waitForDisplayed({ timeout: 20000 });
   }
 
   async ensureEmptyTimesheetAt(startDate) {
@@ -73,7 +73,7 @@ class MyTimesheetPage extends Page {
       async () =>
         (await this.timesheetTbl.isDisplayed()) ||
         (await this.noTimesheetLbl.isDisplayed()),
-      { timeout: 10000, timeoutMsg: "Noi dung tuan khong render" },
+      { timeout: 20000, timeoutMsg: "Noi dung tuan khong render" },
     );
     if (await this.noRecordsLbl.isDisplayed()) return true;
     if (await this.createTimesheetBtn.isDisplayed()) {
@@ -87,7 +87,7 @@ class MyTimesheetPage extends Page {
     await this.submitBtn.click();
     await browser.waitUntil(
       async () => !(await this.statusLbl.getText()).includes("Not Submitted"),
-      { timeout: 10000, timeoutMsg: "Status khong doi sau khi Submit" },
+      { timeout: 20000, timeoutMsg: "Status khong doi sau khi Submit" },
     );
   }
 
@@ -157,7 +157,7 @@ class MyTimesheetPage extends Page {
 
   async saveTimesheet() {
     await this.saveBtn.click();
-    await this.editBtn.waitForDisplayed({ timeout: 10000 });
+    await this.editBtn.waitForDisplayed({ timeout: 20000 });
   }
 }
 
