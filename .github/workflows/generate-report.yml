@@ -109,6 +109,16 @@ jobs:
           gh_pages: gh-pages # ← ĐỌC lịch sử cũ từ đây (thư mục vừa checkout)
           allure_history: allure-history # ← GHI report mới ra đây (một tầng)
           keep_reports: 30
+          allure_report: allure-report
+
+      - name: Debug — liệt kê file
+        run: |
+          echo "=== Thư mục hiện tại ==="
+          ls -la
+          echo "=== allure-history ==="
+          ls -la allure-history/ || echo "KHÔNG có allure-history"
+          echo "=== gh-pages ==="
+          ls -la gh-pages/ || echo "KHÔNG có gh-pages"
 
       # Publish lên branch allure
       - name: Deploy to GitHub Pages
@@ -117,3 +127,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: allure-report
           publish_dir: allure-history # khớp với allure_history ở trên
+          keep_files: true
