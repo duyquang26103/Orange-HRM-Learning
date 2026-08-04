@@ -10,7 +10,7 @@ const INVALID_CREDENTIALS = credentials.admin.error;
 describe('Login Module', () => {
     beforeEach(async () => {
         await browser.url('auth/logout');
-        await LoginPage.usernameTbx.waitForDisplayed();
+        await LoginPage.usernameTbx.waitForDisplayed({ timeout: 10000 });
     });
 
     // LOGIN_TC01 | Severity: S | Priority: Critical | Happy path

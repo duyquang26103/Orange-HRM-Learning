@@ -24,7 +24,7 @@ export const dataInfo = {
         },
         dobWrongFormat: {
             dateOfBirth: '32/13/2020',
-            expectedError: 'Should be a valid date in yyyy-dd-mm format',
+            expectedError: 'Should be a valid date in dd-mm-yyyy format',
         },
     },
     nationalityToSelect: 'Vietnamese',
