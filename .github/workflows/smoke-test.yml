@@ -53,28 +53,26 @@ jobs:
         with:
           name: allure-results
           path: allure-results
-
       # Lấy lịch sử report cũ từ branch allure về
-      # (để giữ trend qua các lần chạy)
       - name: Load report history
         uses: actions/checkout@v4
-        continue-on-error: true # lần chạy đầu chưa có gì, bỏ qua lỗi
+        continue-on-error: true
         with:
-          ref: allure # branch chứa report
-          path: allure-history
+          ref: allure
+          path: gh-pages-branch # ← checkout branch vào thư mục RIÊNG
 
       # Generate report có gộp lịch sử
       - name: Build Allure report
         uses: simple-elf/allure-report-action@master
         with:
           allure_results: allure-results # kết quả lần này
-          allure_history: allure-history/allure-history # lịch sử cũ
-          keep_reports: 30 # giữ tối đa 30 lần chạy gần nhất
+          allure_history: gh-pages-branch/allure-history # đọc lịch sử từ branch cũ
+          keep_reports: 30
 
       # Publish lên branch allure
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: allure # ghi vào branch allure
-          publish_dir: allure-history # thư mục report đã build
+          publish_branch: allure
+          publish_dir: allure-history
