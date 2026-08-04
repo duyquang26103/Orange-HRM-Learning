@@ -111,15 +111,6 @@ jobs:
           keep_reports: 30
           allure_report: allure-report
 
-      - name: Debug — liệt kê file
-        run: |
-          echo "=== Thư mục hiện tại ==="
-          ls -la
-          echo "=== allure-history ==="
-          ls -la allure-history/ || echo "KHÔNG có allure-history"
-          echo "=== gh-pages ==="
-          ls -la gh-pages/ || echo "KHÔNG có gh-pages"
-
       # Publish lên branch allure
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -127,4 +118,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: allure-report
           publish_dir: allure-history # khớp với allure_history ở trên
-          keep_files: true
+          force_orphan: true
