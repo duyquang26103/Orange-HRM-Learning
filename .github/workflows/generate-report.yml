@@ -76,7 +76,7 @@ jobs:
 
   generate-allure-report:
     name: Generate Allure Report
-    needs: [smoke-test]
+    needs: test
     if: always()
     runs-on: ubuntu-latest
     steps:
