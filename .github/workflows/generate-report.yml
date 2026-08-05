@@ -73,45 +73,40 @@ jobs:
           path: allure-results/
           if-no-files-found: ignore
           retention-days: 7
-  publish-report:
-    needs: test
+
+  generate-allure-report:
+    name: Generate Allure Report
+    needs: [smoke-test]
     if: always()
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # Tải allure-results (kết quả thô) mà job test đã upload
-      - name: Download allure results
-        uses: actions/download-artifact@v4
+      - name: Download Result Desktop
+        uses: actions/download-artifact@v7
         with:
-          name: allure-results
+          name: result
           path: allure-results
 
-      # Lấy lịch sử report cũ từ branch allure về
-      # (để giữ trend qua các lần chạy)
-      - name: Load report history
-        uses: actions/checkout@v4
-        continue-on-error: true # lần chạy đầu chưa có gì, bỏ qua lỗi
+      - name: Checkout code
+        uses: actions/checkout@v6
+        continue-on-error: true # in case run without branch for GitHub page source
         with:
-          ref: allure # branch chứa report
-          path: allure-history
+          ref: allure-reports
+          path: allure-reports
 
-      # Generate report có gộp lịch sử
-      - name: Build Allure report
-        uses: simple-elf/allure-report-action@master
+      - uses: simple-elf/allure-report-action@master
+        id: generate-allure-report
         with:
-          allure_results: allure-results # kết quả lần này
-          allure_history: allure-history/allure-history # lịch sử cũ
-          keep_reports: 30 # giữ tối đa 30 lần chạy gần nhất
+          allure_results: allure-results
+          gh_pages: allure-reports
+          allure_report: allure-report
+          allure_history: allure-history
+          keep_reports: 15
 
-      # Publish lên branch allure
-      - name: Deploy to GitHub Pages
+      - name: Deploy report to Github Pages
+        id: deploy-allure-report-page
+        if: ${{ steps.generate-allure-report.outcome == 'success' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: diem/allure-report # ghi vào branch allure
-          publish_dir: allure-history # thư mục report đã build
+          publish_branch: allure-reports
+          publish_dir: allure-history
