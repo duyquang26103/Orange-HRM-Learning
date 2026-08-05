@@ -83,8 +83,9 @@ jobs:
       - name: Download Result Desktop
         uses: actions/download-artifact@v7
         with:
-          name: result
+          name: allure-results-*
           path: allure-results
+          merge-multiple: true
 
       - name: Checkout code
         uses: actions/checkout@v6
