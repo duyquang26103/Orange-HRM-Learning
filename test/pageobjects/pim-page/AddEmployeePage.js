@@ -6,15 +6,15 @@ class AddEmployeePage extends Page {
     }
 
     get firstNameTbx() {
-        return $('input[name="firstName"]');
+        return $('//input[@name="firstName"]');
     }
 
     get middleNameTbx() {
-        return $('input[name="middleName"]');
+        return $('//input[@name="middleName"]');
     }
 
     get lastNameTbx() {
-        return $('input[name="lastName"]');
+        return $('//input[@name="lastName"]');
     }
 
     get employeeIdTbx() {

@@ -25,10 +25,9 @@ export const config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        
         './test/specs/login/Login.js',
-       './test/specs/myInfo/PersonalDetails.js',
-       './test/specs/myInfo/ContactDetails.js',
+        './test/specs/myInfo/PersonalDetails.js',
+        './test/specs/myInfo/ContactDetails.js',
         './test/specs/myInfo/Avatar.js',
         './test/specs/pim/AddEmployee.js',
     ],

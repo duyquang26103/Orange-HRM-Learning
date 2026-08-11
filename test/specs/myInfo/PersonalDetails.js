@@ -10,7 +10,7 @@ describe('OrangeHRM - My Info - Personal Details', () => {
         await LoginPage.login(credentials.admin.username, credentials.admin.password);
         await SideMenuComponent.goTo('My Info');
         await PersonalDetailsPage.headerTitle.waitForDisplayed();
-        
+
         const seed = dataInfo.seedPersonalDetails;
         await PersonalDetailsPage.updateName(seed.firstName, seed.middleName, seed.lastName);
         await PersonalDetailsPage.successToast.waitForDisplayed();

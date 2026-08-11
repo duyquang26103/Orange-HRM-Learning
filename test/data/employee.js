@@ -1,4 +1,4 @@
-export const addEmployeeData = {
+export const employeeData = {
     validEmployee: {
         firstName: 'Automation',
         middleName: '',

@@ -24,7 +24,7 @@ export const dataInfo = {
         },
         dobWrongFormat: {
             dateOfBirth: '32/13/2020',
-            expectedError: 'Should be a valid date in dd-mm-yyyy format',
+            expectedError: 'Should be a valid date in yyyy-dd-mm format',
         },
     },
     nationalityToSelect: 'Vietnamese',
@@ -40,12 +40,12 @@ export const dataInfo = {
         phone: 'abc123455',
         phoneError: 'Allows numbers and only + - / ( )',
         email: 'wrong@email',
-        emailError: 'Expected format: admin@example.com'
+        emailError: 'Expected format: admin@example.com',
     },
     updateContact: {
         street: '123 Le Loi',
         phone: '0909090900',
-        city: 'Ho Chi Minh'
+        city: 'Ho Chi Minh',
     },
     xssAddress: '<script>alert(1)</script>',
     vietnameseName: {

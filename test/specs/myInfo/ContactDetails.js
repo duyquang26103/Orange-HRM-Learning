@@ -16,9 +16,11 @@ describe('OrangeHRM - My Info - Contact Details', () => {
 
     it('MYINFO_TC11: Update Contact Details', async () => {
         const testData = dataInfo.updateContact;
-        await ContactDetailsPage.updateContact(testData.street,testData.city,testData.phone);
+        await ContactDetailsPage.updateContact(testData.street, testData.city, testData.phone);
         await expect(ContactDetailsPage.successToast).toBeDisplayed();
-        await expect(ContactDetailsPage.successToast).toHaveText( expect.stringContaining('Success'));
+        await expect(ContactDetailsPage.successToast).toHaveText(
+            expect.stringContaining('Success')
+        );
     });
 
     it('MYINFO_TC12: Verify the number contains letters.', async () => {
@@ -41,9 +43,9 @@ describe('OrangeHRM - My Info - Contact Details', () => {
 
         const address = dataInfo.xssAddress;
         await ContactDetailsPage.clearField(ContactDetailsPage.street1Tbx);
+
         await ContactDetailsPage.street1Tbx.setValue(address);
         await ContactDetailsPage.saveBtn.click();
-
         await expect(ContactDetailsPage.successToast).toBeDisplayed();
 
         let isAlertOpened = true;
@@ -58,5 +60,4 @@ describe('OrangeHRM - My Info - Contact Details', () => {
         await ContactDetailsPage.waitForFormLoaded();
         await expect(ContactDetailsPage.street1Tbx).toHaveValue(address);
     });
-
-})
+});

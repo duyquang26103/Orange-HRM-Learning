@@ -1,6 +1,6 @@
 import LoginPage from '../../pageobjects/login-page/LoginPage.js';
 import AddEmployeePage from '../../pageobjects/pim-page/AddEmployeePage.js';
-import { addEmployeeData } from '../../data/addEmployee.js';
+import { employeeData } from '../../data/employee.js';
 import { credentials } from '../../data/credentials.js';
 
 describe('PIM - Add Employee', () => {
@@ -11,7 +11,7 @@ describe('PIM - Add Employee', () => {
 
     // ADDEMP_TC01 | Severity: S | Priority: Critical | Happy path
     it('ADDEMP_TC01: thêm nhân viên mới thành công với thông tin hợp lệ', async () => {
-        const testData = addEmployeeData.validEmployee;
+        const testData = employeeData.validEmployee;
         const uniqueLastName = `${testData.lastName}${Date.now()}`;
 
         await AddEmployeePage.open();
@@ -28,7 +28,7 @@ describe('PIM - Add Employee', () => {
 
     // ADDEMP_TC02 | Severity: A | Priority: High | Validation client-side
     it('ADDEMP_TC02: không cho lưu khi bỏ trống First Name', async () => {
-        const testData = addEmployeeData.invalidEmployee.emptyFirstName;
+        const testData = employeeData.invalidEmployee.emptyFirstName;
 
         await AddEmployeePage.open();
         await AddEmployeePage.lastNameTbx.setValue(testData.lastName);
@@ -41,7 +41,7 @@ describe('PIM - Add Employee', () => {
 
     // ADDEMP_TC03 | Severity: S | Priority: Critical | Tạo tài khoản đăng nhập kèm nhân viên
     it('ADDEMP_TC03: thêm nhân viên kèm tài khoản đăng nhập (ESS)', async () => {
-        const testData = addEmployeeData.employeeWithLogin;
+        const testData = employeeData.employeeWithLogin;
         const uniqueSuffix = Date.now();
         const uniqueLastName = `${testData.lastName}${uniqueSuffix}`;
         const uniqueUsername = `${testData.username}${uniqueSuffix}`;
