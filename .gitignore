@@ -11,3 +11,5 @@ allure-report
 allure-results
 
 wdio-appium.log
+
+.env
