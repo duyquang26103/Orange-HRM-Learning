@@ -7,6 +7,36 @@
 - baseUrl đã cấu hình: https://opensource-demo.orangehrmlive.com/web/index.php/
   → dùng đường dẫn tương đối: browser.url('/login')
 
+## PHIÊN BẢN API — TUÂN THỦ NGHIÊM NGẶT
+
+Dự án dùng WebdriverIO v9. Chỉ dùng API của v9.
+
+### KHÔNG được dùng (đã bỏ hoặc lỗi thời)
+
+- toHaveTextContaining, toHaveUrlContaining và mọi matcher
+  dạng XXXContaining → dùng asymmetric matcher:
+  await expect(el).toHaveText(expect.stringContaining('abc'))
+- isDisplayedInViewport() → isDisplayed({ withinViewport: true })
+- Truy cập trực tiếp elem.selector / elem.elementId
+  → dùng getElement() / getElements()
+- KHÔNG thêm wdio-chromedriver-service hay driver service nào
+  → v9 tự tải driver
+- KHÔNG viết code kiểu sync (thiếu await)
+
+### KHÔNG thêm chờ dư thừa
+
+- v9 TỰ chờ element interactable với click() và setValue()
+  → KHÔNG gọi waitForDisplayed/waitForClickable trước chúng
+- expect-webdriverio TỰ retry assertion
+  → KHÔNG thêm wait trước assertion
+- Chờ tường minh CHỈ dùng cho: chờ trạng thái nghiệp vụ
+  (waitUntil), chờ element biến mất (reverse: true)
+- TUYỆT ĐỐI không dùng browser.pause() cố định
+
+### Khi không chắc
+
+Nói rõ là không chắc thay vì đoán. Tôi sẽ tra tài liệu v9.
+
 ## Cấu trúc thư mục
 
 - Page Object: test/pageobjects/\*.page.js
