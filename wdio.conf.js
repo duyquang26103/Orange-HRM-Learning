@@ -30,6 +30,7 @@ export const config = {
         './test/specs/myInfo/ContactDetails.js',
         './test/specs/myInfo/Avatar.js',
         './test/specs/pim/AddEmployee.js',
+        // './test/specs/pim/EmployeeList.js',
     ],
 
     // Patterns to exclude.
@@ -52,7 +53,11 @@ export const config = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 10,
+    // Kept at 1: every spec logs into the SAME shared Admin account on the public demo,
+    // and several specs (Personal Details, Contact Details) mutate that account's own
+    // profile data. Running specs in parallel races on those same records and hammers
+    // the shared demo server, causing timeouts unrelated to the code under test.
+    maxInstances: 1,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:

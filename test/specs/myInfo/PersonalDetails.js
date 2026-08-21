@@ -17,6 +17,11 @@ describe('OrangeHRM - My Info - Personal Details', () => {
         await browser.refresh();
     });
 
+    beforeEach(async () => {
+        await SideMenuComponent.goTo('My Info');
+        await PersonalDetailsPage.headerTitle.waitForDisplayed();
+    });
+
     it('MYINFO_TC01: View Personal Details', async () => {
         const testData = dataInfo.seedPersonalDetails;
         await expect(PersonalDetailsPage.emFirstNameTbx).toHaveValue(testData.firstName);

@@ -6,15 +6,15 @@ class AddEmployeePage extends Page {
     }
 
     get firstNameTbx() {
-        return $('//input[@name="firstName"]');
+        return $('input[name="firstName"]');
     }
 
     get middleNameTbx() {
-        return $('//input[@name="middleName"]');
+        return $('input[name="middleName"]');
     }
 
     get lastNameTbx() {
-        return $('//input[@name="lastName"]');
+        return $('input[name="lastName"]');
     }
 
     get employeeIdTbx() {
@@ -66,7 +66,9 @@ class AddEmployeePage extends Page {
     }
 
     async setEmployeeId(employeeId) {
-        await expect(this.employeeIdTbx).not.toHaveValue('');
+        await browser.waitUntil(async () => (await this.employeeIdTbx.getValue()) !== '', {
+            timeoutMsg: 'Employee Id field did not load with a default value in time',
+        });
         await this.clearField(this.employeeIdTbx);
         await this.employeeIdTbx.setValue(employeeId);
     }

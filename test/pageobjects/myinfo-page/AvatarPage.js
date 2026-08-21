@@ -11,7 +11,7 @@ class AvatarPage extends Page {
         return $('input.oxd-file-input');
     }
     get saveBtn() {
-        return $('//button[@type="submit"]');
+        return $('button[type="submit"]');
     }
     get errorMsg() {
         return $('.oxd-input-field-error-message');
@@ -24,7 +24,7 @@ class AvatarPage extends Page {
     }
 
     async uploadFile(filePath) {
-        const input = await this.fileTbx;
+        const input = await this.fileTbx.getElement();
         await browser.elementSendKeys(input.elementId, filePath);
         await browser.waitUntil(
             async () =>

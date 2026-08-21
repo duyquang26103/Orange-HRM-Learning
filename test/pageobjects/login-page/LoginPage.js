@@ -2,11 +2,11 @@ import Page from '../BasePage.js';
 
 class LoginPage extends Page {
     get usernameTbx() {
-        return $('//input[@name="username"]');
+        return $('input[name="username"]');
     }
 
     get passwordTbx() {
-        return $('//input[@name="password"]');
+        return $('input[name="password"]');
     }
 
     get submitBtn() {
@@ -19,6 +19,14 @@ class LoginPage extends Page {
 
     get requiredErrors() {
         return $$('.oxd-input-field-error-message');
+    }
+
+    get usernameRequiredError() {
+        return $('.oxd-input-group:has(input[name="username"]) .oxd-input-field-error-message');
+    }
+
+    get passwordRequiredError() {
+        return $('.oxd-input-group:has(input[name="password"]) .oxd-input-field-error-message');
     }
 
     get forgotPasswordLink() {

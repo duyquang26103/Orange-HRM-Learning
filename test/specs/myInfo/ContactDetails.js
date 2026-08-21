@@ -9,6 +9,9 @@ describe('OrangeHRM - My Info - Contact Details', () => {
     before(async () => {
         await LoginPage.open();
         await LoginPage.login(credentials.admin.username, credentials.admin.password);
+    });
+
+    beforeEach(async () => {
         await SideMenuComponent.goTo('My Info');
         await EmployeeTabsComponent.goToTab('Contact Details');
         await ContactDetailsPage.headerTitle.waitForDisplayed();
@@ -25,6 +28,7 @@ describe('OrangeHRM - My Info - Contact Details', () => {
 
     it('MYINFO_TC12: Verify the number contains letters.', async () => {
         const testData = dataInfo.wrongContact;
+        await ContactDetailsPage.clearField(ContactDetailsPage.mobileTbx);
         await ContactDetailsPage.mobileTbx.setValue(testData.phone);
         await expect(ContactDetailsPage.phoneErrorMsg).toBeDisplayed();
         await expect(ContactDetailsPage.phoneErrorMsg).toHaveText(testData.phoneError);
@@ -32,6 +36,7 @@ describe('OrangeHRM - My Info - Contact Details', () => {
 
     it('MYINFO_TC13: Verify the email format is invalid.', async () => {
         const testData = dataInfo.wrongContact;
+        await ContactDetailsPage.clearField(ContactDetailsPage.workEmailTbx);
         await ContactDetailsPage.workEmailTbx.setValue(testData.email);
         await expect(ContactDetailsPage.emailErrorMsg).toBeDisplayed();
         await expect(ContactDetailsPage.emailErrorMsg).toHaveText(testData.emailError);

@@ -1,6 +1,5 @@
 import LoginPage from '../../pageobjects/login-page/LoginPage.js';
 import SideMenuComponent from '../../pageobjects/components/SideMenuComponent.js';
-import PersonalDetailsPage from '../../pageobjects/myinfo-page/PersonalDetailsPage.js';
 import AvatarPage from '../../pageobjects/myinfo-page/AvatarPage.js';
 import { dataInfo } from '../../data/myinfo.js';
 import { credentials } from '../../data/credentials.js';
@@ -13,7 +12,6 @@ describe('OrangeHRM - My Info - Avatar', () => {
 
     beforeEach(async () => {
         await SideMenuComponent.goTo('My Info');
-        await PersonalDetailsPage.headerTitle.waitForDisplayed();
         await AvatarPage.editAvatarBtn.click();
         await AvatarPage.headerTitle.waitForDisplayed();
     });

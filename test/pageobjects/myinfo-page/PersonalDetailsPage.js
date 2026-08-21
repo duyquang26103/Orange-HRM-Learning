@@ -69,7 +69,9 @@ class PersonalDetailsPage extends Page {
     }
 
     async updateName(first, midle, last) {
-        await expect(this.emFirstNameTbx).not.toHaveValue('');
+        await browser.waitUntil(async () => (await this.emFirstNameTbx.getValue()) !== '', {
+            timeoutMsg: 'Personal Details form did not load with existing data in time',
+        });
 
         await this.clearField(this.emFirstNameTbx);
         if (first) await this.emFirstNameTbx.setValue(first);

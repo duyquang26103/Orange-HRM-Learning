@@ -35,7 +35,7 @@ class ContactDetailsPage extends Page {
 
     async waitForFormLoaded() {
         await this.headerTitle.waitForDisplayed();
-        await expect(this.street1Tbx).not.toHaveValue('');
+        await this.street1Tbx.waitForDisplayed();
     }
 
     async updateContact(street, city, phone) {

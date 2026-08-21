@@ -9,18 +9,21 @@ describe('PIM - Add Employee', () => {
         await LoginPage.login(credentials.admin.username, credentials.admin.password);
     });
 
+    beforeEach(async () => {
+        await AddEmployeePage.open();
+    });
+
     // ADDEMP_TC01 | Severity: S | Priority: Critical | Happy path
     it('ADDEMP_TC01: thêm nhân viên mới thành công với thông tin hợp lệ', async () => {
         const testData = employeeData.validEmployee;
         const uniqueLastName = `${testData.lastName}${Date.now()}`;
 
-        await AddEmployeePage.open();
         await AddEmployeePage.addEmployee({
             firstName: testData.firstName,
             lastName: uniqueLastName,
         });
 
-        await AddEmployeePage.personalDetailsHeaderLbl.waitForDisplayed();
+        await expect(AddEmployeePage.personalDetailsHeaderLbl).toBeDisplayed();
         expect(await browser.getUrl()).toContain('viewPersonalDetails');
         await expect(AddEmployeePage.firstNameTbx).toHaveValue(testData.firstName);
         await expect(AddEmployeePage.lastNameTbx).toHaveValue(uniqueLastName);
@@ -30,7 +33,6 @@ describe('PIM - Add Employee', () => {
     it('ADDEMP_TC02: không cho lưu khi bỏ trống First Name', async () => {
         const testData = employeeData.invalidEmployee.emptyFirstName;
 
-        await AddEmployeePage.open();
         await AddEmployeePage.lastNameTbx.setValue(testData.lastName);
         await AddEmployeePage.saveBtn.click();
 
@@ -46,7 +48,6 @@ describe('PIM - Add Employee', () => {
         const uniqueLastName = `${testData.lastName}${uniqueSuffix}`;
         const uniqueUsername = `${testData.username}${uniqueSuffix}`;
 
-        await AddEmployeePage.open();
         await AddEmployeePage.addEmployee({
             firstName: testData.firstName,
             lastName: uniqueLastName,
@@ -54,7 +55,7 @@ describe('PIM - Add Employee', () => {
             password: testData.password,
         });
 
-        await AddEmployeePage.personalDetailsHeaderLbl.waitForDisplayed();
+        await expect(AddEmployeePage.personalDetailsHeaderLbl).toBeDisplayed();
         expect(await browser.getUrl()).toContain('viewPersonalDetails');
         await expect(AddEmployeePage.firstNameTbx).toHaveValue(testData.firstName);
         await expect(AddEmployeePage.lastNameTbx).toHaveValue(uniqueLastName);

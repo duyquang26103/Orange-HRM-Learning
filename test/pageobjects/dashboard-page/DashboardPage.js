@@ -6,7 +6,7 @@ class DashboardPage extends Page {
     }
 
     get dashboardTag() {
-        return $('//h6[text()="Dashboard"]');
+        return $('h6=Dashboard');
     }
 
     get userDdn() {
@@ -14,7 +14,7 @@ class DashboardPage extends Page {
     }
 
     get logoutLink() {
-        return $('//a[text()="Logout"]');
+        return $('a=Logout');
     }
 
     async logout() {

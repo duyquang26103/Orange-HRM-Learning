@@ -10,7 +10,7 @@ class EmployeeListPage extends Page {
     }
 
     get submitBtn() {
-        return $("//button[@type='submit']");
+        return $('button[type="submit"]');
     }
 
     get employeeRows() {
