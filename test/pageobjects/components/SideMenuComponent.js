@@ -1,14 +1,26 @@
 class SideMenuComponent {
-  get menuAdmin() { return $('a*=Admin'); }
-  get menuPim() { return $('a*=PIM'); }
-  get menuLeave() { return $('a*=Leave'); }
-  get menuRecruitment() { return $('a*=Recruitment'); }
-  get searchMenuInput() { return $('input[placeholder="Search"]'); }
+    get adminNav() {
+        return $('a*=Admin');
+    }
+    get pimNav() {
+        return $('a*=PIM');
+    }
+    get leaveNav() {
+        return $('a*=Leave');
+    }
+    get recruitmentNav() {
+        return $('a*=Recruitment');
+    }
+    get searchMenuTbx() {
+        return $('input[placeholder="Search"]');
+    }
 
-  async goTo(moduleName) {
-    await this.searchMenuInput.setValue(moduleName);
-    await $(`a*=${moduleName}`).click();
-  }
+    async goTo(moduleName) {
+        await this.searchMenuTbx.setValue(moduleName);
+        const menuItem = $(`a*=${moduleName}`);
+        await menuItem.waitForDisplayed();
+        await menuItem.click();
+    }
 }
 
 export default new SideMenuComponent();

@@ -1,10 +1,11 @@
-import LoginPage from '../pageobjects/LoginPage.js';
-import DashboardPage from '../pageobjects/DashboardPage.js';
-import ForgotPasswordPage from '../pageobjects/ForgotPasswordPage.js';
+import LoginPage from '../../pageobjects/login-page/LoginPage.js';
+import DashboardPage from '../../pageobjects/dashboard-page/DashboardPage.js';
+import ForgotPasswordPage from '../../pageobjects/login-page/ForgotPasswordPage.js';
+import { credentials } from '../../data/credentials.js';
 
-const VALID_USER = 'Admin';
-const VALID_PASS = 'admin123';
-const INVALID_CREDENTIALS = 'Invalid credentials';
+const VALID_USER = credentials.admin.username;
+const VALID_PASS = credentials.admin.password;
+const INVALID_CREDENTIALS = credentials.admin.error;
 
 describe('Login Module', () => {
     beforeEach(async () => {
@@ -15,12 +16,11 @@ describe('Login Module', () => {
     // LOGIN_TC01 | Severity: S | Priority: Critical | Happy path
     it('LOGIN_TC01: đăng nhập thành công với tài khoản hợp lệ', async () => {
         await LoginPage.login(VALID_USER, VALID_PASS);
-        // Expected: chuyển đến Dashboard, hiển thị breadcrumb "Dashboard"
         await expect(DashboardPage.dashboardTag).toBeDisplayed();
     });
 
     // LOGIN_TC02 | Severity: S | Priority: Critical | Bảo mật cơ bản
-    it('LOGIN_TC02: đăng nhập thất bại với password sai', async () => {
+    it ('LOGIN_TC02: đăng nhập thất bại với password sai', async () => {
         await LoginPage.login(VALID_USER, 'wrongpass');
 
         await expect(LoginPage.errorAlert).toBeDisplayed();
@@ -40,7 +40,7 @@ describe('Login Module', () => {
         await LoginPage.setPassword(VALID_PASS);
         await LoginPage.clickLogin();
 
-        await expect(LoginPage.requiredErrors).toBeElementsArrayOfSize(1);
+        await expect(LoginPage.usernameRequiredError).toHaveText('Required');
     });
 
     // LOGIN_TC05 | Severity: A | Priority: High | Validation client-side
@@ -48,7 +48,7 @@ describe('Login Module', () => {
         await LoginPage.setUsername(VALID_USER);
         await LoginPage.clickLogin();
 
-        await expect(LoginPage.requiredErrors).toBeElementsArrayOfSize(1);
+        await expect(LoginPage.passwordRequiredError).toHaveText('Required');
     });
 
     // LOGIN_TC06 | Severity: A | Priority: High | Validation đồng thời nhiều trường
@@ -135,10 +135,9 @@ describe('Login Module', () => {
     it('LOGIN_TC16: truy cập trang nội bộ khi chưa login', async () => {
         await DashboardPage.open();
 
-        await browser.waitUntil(
-            async () => (await browser.getUrl()).includes('auth/login'),
-            { timeout: 10000, timeoutMsg: 'Không bị redirect về login khi chưa đăng nhập' }
-        );
+        await browser.waitUntil(async () => (await browser.getUrl()).includes('auth/login'), {
+            timeoutMsg: 'Không bị redirect về login khi chưa đăng nhập',
+        });
         await expect(LoginPage.submitBtn).toBeDisplayed();
     });
 
@@ -160,7 +159,6 @@ describe('Login Module', () => {
     it('LOGIN_TC19: username quá dài (>255 ký tự)', async () => {
         await LoginPage.login('a'.repeat(300), VALID_PASS);
 
-        await LoginPage.errorAlert.waitForDisplayed({ timeout: 15000 });
         await expect(LoginPage.errorAlert).toHaveText(INVALID_CREDENTIALS);
     });
 
