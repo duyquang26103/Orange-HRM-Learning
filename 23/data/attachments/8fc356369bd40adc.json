@@ -1,5 +1,0 @@
-{
-  "error": "no such element",
-  "message": "no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".oxd-alert-content-text\"}\n  (Session info: chrome=152.0.7977.42)",
-  "stacktrace": "#0 0x55e4432a62ca <unknown>\n#1 0x55e442c09b39 <unknown>\n#2 0x55e442c5f8d5 <unknown>\n#3 0x55e442c5fb41 <unknown>\n#4 0x55e442caaa54 <unknown>\n#5 0x55e442ca7c63 <unknown>\n#6 0x55e442c52ecb <unknown>\n#7 0x55e442c53cb1 <unknown>\n#8 0x55e44326a7f0 <unknown>\n#9 0x55e443268e6a <unknown>\n#10 0x55e443253bb5 <unknown>\n#11 0x55e443269b2a <unknown>\n#12 0x55e44323cdf0 <unknown>\n#13 0x55e443291238 <unknown>\n#14 0x55e4432913d5 <unknown>\n#15 0x55e4432a4e53 <unknown>\n#16 0x7f1e28e9caa4 <unknown>\n#17 0x7f1e28f29c6c <unknown>\n"
-}
