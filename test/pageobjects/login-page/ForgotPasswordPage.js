@@ -1,8 +1,8 @@
-import Page from './BasePage.js';
+import Page from '../BasePage.js';
 
 class ForgotPasswordPage extends Page {
     get usernameTbx() {
-        return $('//input[@name="username"]');
+        return $('input[name="username"]');
     }
 
     get resetBtn() {
