@@ -1,13 +1,9 @@
-import LoginPage from '../../pageobjects/login-page/LoginPage.js';
 import SideMenuComponent from '../../pageobjects/components/SideMenuComponent.js';
 import PersonalDetailsPage from '../../pageobjects/myinfo-page/PersonalDetailsPage.js';
 import { dataInfo } from '../../data/myinfo.js';
-import { credentials } from '../../data/credentials.js';
 
 describe('OrangeHRM - My Info - Personal Details', () => {
     before(async () => {
-        await LoginPage.open();
-        await LoginPage.login(credentials.admin.username, credentials.admin.password);
         await SideMenuComponent.goTo('My Info');
         await PersonalDetailsPage.headerTitle.waitForDisplayed();
 

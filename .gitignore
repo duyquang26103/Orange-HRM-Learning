@@ -5,6 +5,8 @@
 .idea
 .claude
 .env
+.auth
+.session.json
 
 
 tmp

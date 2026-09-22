@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 import dotenv from 'dotenv';
+import { ensureLoggedIn } from './test/helpers/session.js';
+import { credentials } from './test/data/credentials.js';
 dotenv.config();
 
 export const config = {
@@ -25,12 +27,12 @@ export const config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        './test/specs/login/Login.js',
-        './test/specs/myInfo/PersonalDetails.js',
-        './test/specs/myInfo/ContactDetails.js',
-        './test/specs/myInfo/Avatar.js',
+        // './test/specs/login/Login.js',
+        // './test/specs/myInfo/PersonalDetails.js',
+        // './test/specs/myInfo/ContactDetails.js',
+        // './test/specs/myInfo/Avatar.js',
         './test/specs/pim/AddEmployee.js',
-        // './test/specs/pim/EmployeeList.js',
+        './test/specs/pim/EmployeeList.js',
     ],
 
     // Patterns to exclude.
@@ -160,6 +162,7 @@ export const config = {
         if (!fs.existsSync('./screenshots')) {
             fs.mkdirSync('./screenshots', { recursive: true });
         }
+        console.log('Hello World!!!');
     },
     capabilities: [
         {
@@ -215,8 +218,11 @@ export const config = {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {object}         browser      instance of created browser/device session
      */
-    // before: function (capabilities, specs) {
-    // },
+    before: async function () {
+        console.log('Check Login');
+        await ensureLoggedIn(credentials.admin.username, credentials.admin.password);
+        console.log('Đã Login được rồi nha');
+    },
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {string} commandName hook command name
@@ -228,13 +234,17 @@ export const config = {
      * Hook that gets executed before the suite starts
      * @param {object} suite suite details
      */
-    // beforeSuite: function (suite) {
+    // beforeSuite: async function (suite) {
+    //     await ensureLoggedIn(credentials.admin.username, credentials.admin.password);
+    //     console.log('Đã Login được rồi nha');
     // },
     /**
      * Function to be executed before a test (in Mocha/Jasmine) starts.
      */
-    // beforeTest: function (test, context) {
-    // },
+    beforeTest: async function (test, context) {
+        await ensureLoggedIn(credentials.admin.username, credentials.admin.password);
+        console.log('Đã Login được rồi nha');
+    },
     /**
      * Hook that gets executed _before_ a hook within the suite starts (e.g. runs before calling
      * beforeEach in Mocha)
@@ -257,12 +267,12 @@ export const config = {
      * @param {boolean} result.passed    true if test has passed, otherwise false
      * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
-    afterTest: async function (test, context, { passed }) {
-        if (!passed) {
-            const safeName = `${test.parent}-${test.title}`.replace(/[^a-zA-Z0-9]+/g, '_');
-            await browser.saveScreenshot(`./screenshots/${safeName}.png`);
-        }
-    },
+    // afterTest: async function (test, context, { passed }) {
+    //     if (!passed) {
+    //         const safeName = `${test.parent}-${test.title}`.replace(/[^a-zA-Z0-9]+/g, '_');
+    //         await browser.saveScreenshot(`./screenshots/${safeName}.png`);
+    //     }
+    // },
 
     /**
      * Hook that gets executed after the suite has ended

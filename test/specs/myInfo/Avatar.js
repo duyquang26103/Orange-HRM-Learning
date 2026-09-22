@@ -1,15 +1,8 @@
-import LoginPage from '../../pageobjects/login-page/LoginPage.js';
 import SideMenuComponent from '../../pageobjects/components/SideMenuComponent.js';
 import AvatarPage from '../../pageobjects/myinfo-page/AvatarPage.js';
 import { dataInfo } from '../../data/myinfo.js';
-import { credentials } from '../../data/credentials.js';
 
 describe('OrangeHRM - My Info - Avatar', () => {
-    before(async () => {
-        await LoginPage.open();
-        await LoginPage.login(credentials.admin.username, credentials.admin.password);
-    });
-
     beforeEach(async () => {
         await SideMenuComponent.goTo('My Info');
         await AvatarPage.editAvatarBtn.click();

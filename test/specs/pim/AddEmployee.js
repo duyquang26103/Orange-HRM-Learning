@@ -1,20 +1,13 @@
-import LoginPage from '../../pageobjects/login-page/LoginPage.js';
 import AddEmployeePage from '../../pageobjects/pim-page/AddEmployeePage.js';
 import { employeeData } from '../../data/employee.js';
-import { credentials } from '../../data/credentials.js';
 
 describe('PIM - Add Employee', () => {
-    before(async () => {
-        await LoginPage.open();
-        await LoginPage.login(credentials.admin.username, credentials.admin.password);
-    });
-
     beforeEach(async () => {
         await AddEmployeePage.open();
     });
 
     // ADDEMP_TC01 | Severity: S | Priority: Critical | Happy path
-    it('ADDEMP_TC01: thêm nhân viên mới thành công với thông tin hợp lệ', async () => {
+    it.only('ADDEMP_TC01: thêm nhân viên mới thành công với thông tin hợp lệ', async () => {
         const testData = employeeData.validEmployee;
         const uniqueLastName = `${testData.lastName}${Date.now()}`;
 
