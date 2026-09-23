@@ -1,13 +1,17 @@
 {
+<<<<<<< HEAD
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+=======
+>>>>>>> 5bded5dfcd45b9c2e493d1795986b182cf9f30a3
     "version": "0.2.0",
     "configurations": [
         {
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
+<<<<<<< HEAD
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -15,3 +19,10 @@
         }
     ]
 }
+=======
+            "skipFiles": ["<node_internals>/**"],
+            "program": "${workspaceFolder}\\test\\pageobjects\\myinfo-page\\PersonalDetailsPage.js"
+        }
+    ]
+}
+>>>>>>> 5bded5dfcd45b9c2e493d1795986b182cf9f30a3

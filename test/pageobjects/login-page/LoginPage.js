@@ -1,15 +1,15 @@
-import Page from './BasePage.js';
+import Page from '../BasePage.js';
 
 class LoginPage extends Page {
-    get inputUsername() {
-        return $('//input[@name="username"]');
+    get usernameTbx() {
+        return $('input[name="username"]');
     }
 
-    get inputPassword() {
-        return $('//input[@name="password"]');
+    get passwordTbx() {
+        return $('input[name="password"]');
     }
 
-    get btnSubmit() {
+    get submitBtn() {
         return $('button[type="submit"]');
     }
 
@@ -19,6 +19,14 @@ class LoginPage extends Page {
 
     get requiredErrors() {
         return $$('.oxd-input-field-error-message');
+    }
+
+    get usernameRequiredError() {
+        return $('.oxd-input-group:has(input[name="username"]) .oxd-input-field-error-message');
+    }
+
+    get passwordRequiredError() {
+        return $('.oxd-input-group:has(input[name="password"]) .oxd-input-field-error-message');
     }
 
     get forgotPasswordLink() {
@@ -33,18 +41,18 @@ class LoginPage extends Page {
      * @param {string} username
      */
     async setUsername(username) {
-        await this.inputUsername.setValue(username);
+        await this.usernameTbx.setValue(username);
     }
 
     /**
      * @param {string} password
      */
     async setPassword(password) {
-        await this.inputPassword.setValue(password);
+        await this.passwordTbx.setValue(password);
     }
 
     async clickLogin() {
-        await this.btnSubmit.click();
+        await this.submitBtn.click();
     }
 
     /**
@@ -52,9 +60,9 @@ class LoginPage extends Page {
      * @param {string} password
      */
     async login(username, password) {
-        await this.inputUsername.setValue(username);
-        await this.inputPassword.setValue(password);
-        await this.btnSubmit.click();
+        await this.usernameTbx.setValue(username);
+        await this.passwordTbx.setValue(password);
+        await this.submitBtn.click();
     }
 
     /**
